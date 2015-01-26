@@ -101,52 +101,19 @@
       </header>
     
     <div class="article-entry" itemprop="articleBody">
-      	  
-		<!-- 文章目录开始 -->
-		
-		<!-- 文章目录结束 -->
+      
         <blockquote>
 <p>Yang, Yi, and Deva Ramanan. <em>“Articulated pose estimation with flexible mixtures-of-parts.”</em> CVPR 2011.</p>
 </blockquote>
 <p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/pose-unconstrained.jpg" alt="图1. 无约束pose"></p>
 <h2 id="概述">概述</h2>
 <p>基于Part-based model的经典人体姿态估计算法.</p>
-<h2 id="问题背景">问题背景</h2>
-<p>所谓articulated pose estimation, 是指<strong>检测出人体每个关节的位置</strong>, 该问题具有广泛的应用背景, 如action recognition, human detection &amp; segmentation等. 但是在无约束条件下, human pose是千变万化的, 如图1所示, 造成了该问题很难解决.</p>
-<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/pictorial-model.png" alt="图2. pictorial model"></p>
-<p>传统方法通常是基于pictorial model的. 该model包含两个部分 (图2a-b)</p>
-<ul>
-<li>每个part的模板: 本文是基于HOG特征用SVM训练的模板.</li>
-<li>part间的连接(spring)</li>
-</ul>
-<p>但是这类方法也存在很多挑战, 比如图2-c所示, 手臂因为拍摄角度的问题, 会呈现出多种不同姿态, 甚至fore-shortening. 此外, 还存在旋转, 尺度变化, 外观变化, 比例变化等等问题. 为了解决这些问题, 本文提出了基于mixture of parts的pictorial model.</p>
-<h2 id="模型">模型</h2>
-<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/pictorial-model-structure.png" alt="图3. 本文采用的pictorial model"><br>$I$ 表示图像, $l_i$ 表示第$i$个part所处的位置. 那么pictorial model表示如下(图3)</p>
-<p><span>$$S(I, L) = \sum_{i\in V}\alpha_i \cdot \phi(I, l_i) + \sum_{ij \in E}\beta_{ij}\cdot \psi(l_i, l_j).$$</span><br>各项含义如下</p>
-<ul>
-<li>unary term:<ul>
-<li>$\alpha_i$: 第$i$个part的模板, 也就是学出来的参数(特征权重)</li>
-<li>$\phi(I, l_i)$: 第$i$个part在位置$l_i$的图像特征</li>
-</ul>
-</li>
-<li>pairwise term:<ul>
-<li>$\beta_{ij}$: part i和part j之间的pairwise spring (pairwise 关系, 学习得到的参数)</li>
-<li>$\psi(l_i, l_j)$: part i和part j之间的位置特征.</li>
-</ul>
-</li>
-</ul>
-<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/mixture-of-parts.png" alt="图4. arm 的 Mixtures示意图"></p>
-<p>本文还提出了重要的mixture of parts的概念(图4): 因为每类part的外观因为视角等因素, 外观其实很不相同, 因此作者将每个part根据与其parent的位置关系来聚类, 这样每个part就聚类得到K个cluster, 也就是mixture. 这样模型就变成了下面形式</p>
-<p><span>$$S(I, L, M) = \sum_{i\in V}\alpha_i^{m_i} \cdot \phi(I, l_i) + \sum_{ij \in E}\beta_{ij}^{m_im_j}\cdot \psi(l_i, l_j) + S(M).$$</span><br>其中$m_i$表示第i个part所属的mixture. $S(M)$表示mixture间的相容性, 如图5所示.</p>
-<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/cooccurence.png" alt="图5. Mixture of Parts的相关性统计"></p>
-<h2 id="Inference_模型推理">Inference 模型推理</h2>
-<p>Inference解决的是如下问题:</p>
-<p><span>$$\arg\max_{L, M}S(I, L, M).$$</span><br>因为是tree structure, 所以容易通过动态规划来求解.</p>
-<h2 id="Learning_模型学习">Learning 模型学习</h2>
-<p>首先将part feature连成一个长向量, 如有m个mixture, 第$i$个part属于第$j$个mixture, 那么该向量为</p>
-<p><span>$$f_{part} = [0, 0, \cdots, \overbrace{\phi(l_i)}^{j-th mixture}, \cdots, 0, 0].$$</span><br>然后将mixture feature也连成一个长向量, 该向量为<br>?????</p>
-<p>最后将part feature和mixture feature合成一个长向量$Z$, 最后优化的目标为训练SVM分类器</p>
-
+<p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2015/01/26/mixtures-of-parts/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
