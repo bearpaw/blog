@@ -4,17 +4,26 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Archives | Pumpkin</title>
+  <title>Histograms of Oriented Gradients for Human Detection | Pumpkin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Be grateful for each new day">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Pumpkin">
-<meta property="og:url" content="http://bearpaw.github.io/blog/blog/archives/">
+  <meta name="description" content="Dalal, Navneet, and Bill Triggs. “Histograms of oriented gradients for human detection.” CVPR 2005. 
+
+概述
+基于梯度方向直方图的用于Human Detection的经典特征. 该方法适合shape-based object.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Histograms of Oriented Gradients for Human Detection">
+<meta property="og:url" content="http://bearpaw.github.io/blog/blog/2015/01/26/hog-feature/">
 <meta property="og:site_name" content="Pumpkin">
-<meta property="og:description" content="Be grateful for each new day">
+<meta property="og:description" content="Dalal, Navneet, and Bill Triggs. “Histograms of oriented gradients for human detection.” CVPR 2005. 
+
+概述
+基于梯度方向直方图的用于Human Detection的经典特征. 该方法适合shape-based object.">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Pumpkin">
-<meta name="twitter:description" content="Be grateful for each new day">
+<meta name="twitter:title" content="Histograms of Oriented Gradients for Human Detection">
+<meta name="twitter:description" content="Dalal, Navneet, and Bill Triggs. “Histograms of oriented gradients for human detection.” CVPR 2005. 
+
+概述
+基于梯度方向直方图的用于Human Detection的经典特征. 该方法适合shape-based object.">
 
   
     <link rel="alternative" href="/blog/atom.xml" title="Pumpkin" type="application/atom+xml">
@@ -74,9 +83,7 @@
   </div>
 </header>
     <div class="outer">
-      <section id="main">
-  
-    <article id="post-hog-feature" class="article article-type-post" itemscope itemprop="blogPost">
+      <section id="main"><article id="post-hog-feature" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blog/2015/01/26/hog-feature/" class="article-date">
   <time datetime="2015-01-26T01:07:16.000Z" itemprop="datePublished">1月 26 2015</time>
@@ -93,25 +100,49 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/01/26/hog-feature/">Histograms of Oriented Gradients for Human Detection</a>
+    <h1 class="article-title" itemprop="name">
+      Histograms of Oriented Gradients for Human Detection
     </h1>
   
 
       </header>
     
     <div class="article-entry" itemprop="articleBody">
-      
+      	  
+		<!-- 文章目录开始 -->
+		
+			<div id="toc" class="toc-article">
+				<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现"><span class="toc-number">2.</span> <span class="toc-text">实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于HOG特征维度的讨论"><span class="toc-number">3.</span> <span class="toc-text">关于HOG特征维度的讨论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dataset"><span class="toc-number">4.</span> <span class="toc-text">Dataset</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文献"><span class="toc-number">5.</span> <span class="toc-text">参考文献</span></a></li></ol>
+			</div>
+		
+		<!-- 文章目录结束 -->
         <blockquote>
 <p>Dalal, Navneet, and Bill Triggs. “Histograms of oriented gradients for human detection.” CVPR 2005. </p>
 </blockquote>
 <h2 id="概述">概述</h2>
-<p>基于梯度方向直方图的用于Human Detection的经典特征. 该方法适合shape-based object.<br>
-        
-          <p class="article-more-link">
-            <a href="/blog/2015/01/26/hog-feature/#more">Read More</a>
-          </p>
-        
+<p>基于梯度方向直方图的用于Human Detection的经典特征. 该方法适合shape-based object.<br><a id="more"></a></p>
+<h2 id="实现">实现</h2>
+<p>首先对算法流程进行大致描述:</p>
+<ol>
+<li>将图像划分为小的连接区域(称为cell, 比如2*2)</li>
+<li>计算cell中每个pixel的gradient orientation和magnitution</li>
+<li>计算每个cell的加权梯度直方图 (根据梯度方向来分bin, 根据梯度大小来加权), 得到每个cell的descriptor</li>
+<li>将若干cell(如2*2)作为一个block, 计算其光强, 并用该光强归一化该block中每个cell的descriptor</li>
+</ol>
+<p><strong>梯度计算</strong>: 作者在高斯平滑的图片上尝试了多种梯度算子, 包括1-D Point derivatives(uncentered [-1, 1], centered [-1, 0, 1], cubic corrected [1, -8, 0, 8, -1]), 以及3*3的Sobel算子等. 最后发现在未经过平滑的图像上, 采用[-1, 0, 1]的算子来计算的梯度能得到最好的效果.<br>对于彩色图像, 计算每个通道的梯度, 然后取有最大norm的作为该像素的梯度向量.</p>
+<p><strong>直方图计算</strong>: 计算出的梯度方向由梯度大小(magnitude)加权, 按照[0-180]度的范围分为9个bin. 作者也讨论到, 对于分方向的物体, 如车, 摩托等, 采用带负方向的直方图(即[0-360]度)可能更有效.</p>
+<p><strong>Local Contrast Normalization</strong>: 对局部做normalization是结局光照变化的有效方法. 通常做法是把cell group为更大的block, 然后每个block分别做normalization. 本文的block是有overlap: 这就意味着：每一个cell的特征会以不同的结果多次出现在最后的特征向量中。归一化之后的block描述符（向量）就称之为HOG描述符. </p>
+<h2 id="关于HOG特征维度的讨论">关于HOG特征维度的讨论</h2>
+<p>以64<em>128的图像为例, 假设cell大小为8</em>8 pixel, block大小为 2<em>2 cell. 若梯度方向划分为9 bin, 那么一个block的特征描述为 9</em>2<em>2 = 36 维.<br>若用block对图像进行扫描, 扫描步长(stride)为8 pixel. 相当于对图像做卷积, 输入输出维度为 <strong> outdim = (inputdim - kernelsize)/stride +1 </strong>. 所以在本例中, 长边输出维度为 (128-16)/8 + 1 = 15维, 短边输出为 (64-16)/8+1 = 7 维. 总共有 15</em>7*36维的特征 (例子来源<a href="http://blog.csdn.net/zouxy09/article/details/7929348" target="_blank" rel="external">[1]</a>).</p>
+<h2 id="Dataset">Dataset</h2>
+<p>著名的INRIA Person Dataset就是本文提出的. 该数据集总共有1805张图像. 分为train和test两部分, 每个部分都包含pos(包含人)和neg(不包含人)两部分的数据. 其中train neg数据(1218张图像)在实验中被当作初始的负样本集合, 用来找hard negtive examples, 并用于最终分类器的学习. 值得注意的是, 这1218张train negtive images, 以及mining hard examples的策略后来被广泛应用于和human相关的工作中.</p>
+<h2 id="参考文献">参考文献</h2>
+<ol>
+<li><a href="http://blog.csdn.net/zouxy09/article/details/7929348" target="_blank" rel="external">目标检测的图像特征提取之（一）HOG特征</a></li>
+<li><a href="http://blog.csdn.net/abcjennifer/article/details/7365651" target="_blank" rel="external">HOG特征-理解篇</a></li>
+</ol>
+
       
     </div>
     <footer class="article-footer">
@@ -129,11 +160,14 @@
     </footer>
   </div>
   
+    
+  
 </article>
 
 
-  
-  
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2015/01/26/hog-feature/" data-title="Histograms of Oriented Gradients for Human Detection" data-url="http://bearpaw.github.io/blog/2015/01/26/hog-feature/"></div>
+  </section>
 </section>
       
       <aside id="sidebar">
