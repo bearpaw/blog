@@ -29,7 +29,7 @@
     <link rel="alternative" href="/blog/atom.xml" title="Pumpkin" type="application/atom+xml">
   
   
-    <link rel="icon" href="/favicon.png">
+    <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" href="/blog/css/style.css" type="text/css">
 
@@ -118,7 +118,7 @@
 		
 		<!-- 文章目录结束 -->
         <blockquote>
-<p>Dalal, Navneet, and Bill Triggs. “Histograms of oriented gradients for human detection.” CVPR 2005. </p>
+<p>Dalal, Navneet, and Bill Triggs. <em>“Histograms of oriented gradients for human detection.”</em> CVPR 2005. </p>
 </blockquote>
 <h2 id="概述">概述</h2>
 <p>基于梯度方向直方图的用于Human Detection的经典特征. 该方法适合shape-based object.<br><a id="more"></a></p>
@@ -134,7 +134,7 @@
 <p><strong>直方图计算</strong>: 计算出的梯度方向由梯度大小(magnitude)加权, 按照[0-180]度的范围分为9个bin. 作者也讨论到, 对于分方向的物体, 如车, 摩托等, 采用带负方向的直方图(即[0-360]度)可能更有效.</p>
 <p><strong>Local Contrast Normalization</strong>: 对局部做normalization是结局光照变化的有效方法. 通常做法是把cell group为更大的block, 然后每个block分别做normalization. 本文的block是有overlap: 这就意味着：每一个cell的特征会以不同的结果多次出现在最后的特征向量中。归一化之后的block描述符（向量）就称之为HOG描述符. </p>
 <h2 id="关于HOG特征维度的讨论">关于HOG特征维度的讨论</h2>
-<p>以64<em>128的图像为例, 假设cell大小为8</em>8 pixel, block大小为 2<em>2 cell. 若梯度方向划分为9 bin, 那么一个block的特征描述为 9</em>2<em>2 = 36 维.<br>若用block对图像进行扫描, 扫描步长(stride)为8 pixel. 相当于对图像做卷积, 输入输出维度为 <strong> outdim = (inputdim - kernelsize)/stride +1 </strong>. 所以在本例中, 长边输出维度为 (128-16)/8 + 1 = 15维, 短边输出为 (64-16)/8+1 = 7 维. 总共有 15</em>7*36维的特征 (例子来源<a href="http://blog.csdn.net/zouxy09/article/details/7929348" target="_blank" rel="external">[1]</a>).</p>
+<p>以64*128的图像为例, 假设cell大小为8*8 pixel, block大小为 2*2 cell. 若梯度方向划分为9 bin, 那么一个block的特征描述为 9*2*2 = 36 维.<br>若用block对图像进行扫描, 扫描步长(stride)为8 pixel. 相当于对图像做卷积, 输入输出维度为 <strong> outdim = (inputdim - kernelsize)/stride +1 </strong>. 所以在本例中, 长边输出维度为 (128-16)/8 + 1 = 15维, 短边输出为 (64-16)/8+1 = 7 维. 总共有 15*7*36维的特征 (例子来源<a href="http://blog.csdn.net/zouxy09/article/details/7929348" target="_blank" rel="external">[1]</a>).</p>
 <h2 id="Dataset">Dataset</h2>
 <p>著名的INRIA Person Dataset就是本文提出的. 该数据集总共有1805张图像. 分为train和test两部分, 每个部分都包含pos(包含人)和neg(不包含人)两部分的数据. 其中train neg数据(1218张图像)在实验中被当作初始的负样本集合, 用来找hard negtive examples, 并用于最终分类器的学习. 值得注意的是, 这1218张train negtive images, 以及mining hard examples的策略后来被广泛应用于和human相关的工作中.</p>
 <h2 id="参考文献">参考文献</h2>
@@ -268,7 +268,7 @@
 </nav>
   <!-- totop start -->
 <div id="totop">
-<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+<a title="返回顶部"><img src="/blog//img/scrollup.png"/></a>
 </div>
 
 <!-- totop end -->
