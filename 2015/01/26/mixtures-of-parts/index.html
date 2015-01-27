@@ -22,6 +22,7 @@
 基于Part-based model的经典人体姿态估计算法.">
 <meta property="og:image" content="http://7u2pi6.com1.z0.glb.clouddn.com/blog/pose-unconstrained.jpg">
 <meta property="og:image" content="http://7u2pi6.com1.z0.glb.clouddn.com/blog/pictorial-model.png">
+<meta property="og:image" content="http://7u2pi6.com1.z0.glb.clouddn.com/blog/mixture-of-parts-animation.gif">
 <meta property="og:image" content="http://7u2pi6.com1.z0.glb.clouddn.com/blog/pictorial-model-structure.png">
 <meta property="og:image" content="http://7u2pi6.com1.z0.glb.clouddn.com/blog/mixture-of-parts.png">
 <meta property="og:image" content="http://7u2pi6.com1.z0.glb.clouddn.com/blog/cooccurence.png">
@@ -140,26 +141,27 @@
 <li>每个part的模板: 本文是基于HOG特征用SVM训练的模板.</li>
 <li>part间的连接(spring)</li>
 </ul>
-<p>但是这类方法也存在很多挑战, 比如图2-c所示, 手臂因为拍摄角度的问题, 会呈现出多种不同姿态, 甚至fore-shortening. 此外, 还存在旋转, 尺度变化, 外观变化, 比例变化等等问题. 为了解决这些问题, 本文提出了基于mixture of parts的pictorial model.</p>
+<p>但是这类方法也存在很多挑战, 比如图2-c所示, 手臂因为拍摄角度的问题, 会呈现出多种不同姿态, 甚至fore-shortening. 传统模型需要train/test大量模板. 此外, 还存在旋转, 尺度变化, 外观变化, 比例变化等等问题. 为了解决这些问题, 本文提出了基于mixture of parts的pictorial model. 该model认为每一个part(如头), 因为朝向不同, 视角不同, 会造成外观的很大差异, 因此需要同一个part细分为更多中type. 这样的intuition不仅能更有效的考虑到part的各种变化, 还能表达了不同part的不同type的co-occurrence: 比如下垂的手臂比如容易和下垂的上肢同时出现, 而不太可能与上扬的上肢同时出现, 如图3所示.</p>
+<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/mixture-of-parts-animation.gif" alt="图3. 下肢的变化可以用一个2-part的模型来表达. 例如手臂旋转或forshortens时, 只需要选择每个part不同的type, 以及两个part之间的spring即可."></p>
 <h2 id="模型">模型</h2>
-<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/pictorial-model-structure.png" alt="图3. 本文采用的pictorial model"><br>$I$ 表示图像, $l_i$ 表示第$i$个part所处的位置. 那么pictorial model表示如下(图3)</p>
+<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/pictorial-model-structure.png" alt="图4. 本文采用的pictorial model"><br>$I$ 表示图像, $l_i$ 表示第$i$个part所处的位置. 那么pictorial model表示如下(图4)</p>
 <p><span>$$S(I, L) = \sum_{i\in V}\alpha_i \cdot \phi(I, l_i) + \sum_{ij \in E}\beta_{ij}\cdot \psi(l_i, l_j).$$</span><br>各项含义如下</p>
 <ul>
-<li>unary term:<ul>
+<li><strong>Apperance Model</strong>(unary term):<ul>
 <li>$\alpha_i$: 第$i$个part的模板, 也就是学出来的参数(特征权重)</li>
-<li>$\phi(I, l_i)$: 第$i$个part在位置$l_i$的图像特征</li>
+<li>$\phi(I, l_i)$: 第$i$个part在位置$l_i$的图像特征 (对每个part, 本文采用$5\times 5$ cells的<a href="/blog/2015/01/26/hog-feature/">HOG特征</a>)</li>
 </ul>
 </li>
-<li>pairwise term:<ul>
+<li><strong>Deformation Model</strong>(pairwise term):<ul>
 <li>$\beta_{ij}$: part i和part j之间的pairwise spring (pairwise 关系, 学习得到的参数)</li>
-<li>$\psi(l_i, l_j)$: part i和part j之间的位置特征.</li>
+<li>$\psi(l_i, l_j)$: part i和part j之间的位置特征 ($[dx \quad dx^2\quad dy\quad dy^2]$, 其中$dx = x_i - x_j$).</li>
 </ul>
 </li>
 </ul>
-<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/mixture-of-parts.png" alt="图4. arm 的 Mixtures示意图"></p>
-<p>本文还提出了重要的mixture of parts的概念(图4): 因为每类part的外观因为视角等因素, 外观其实很不相同, 因此作者将每个part根据与其parent的位置关系来聚类, 这样每个part就聚类得到K个cluster, 也就是mixture. 这样模型就变成了下面形式</p>
-<p><span>$$S(I, L, M) = \sum_{i\in V}\alpha_i^{m_i} \cdot \phi(I, l_i) + \sum_{ij \in E}\beta_{ij}^{m_im_j}\cdot \psi(l_i, l_j) + S(M).$$</span><br>其中$m_i$表示第i个part所属的mixture. $S(M)$表示mixture间的相容性, 如图5所示.</p>
-<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/cooccurence.png" alt="图5. Mixture of Parts的相关性统计"></p>
+<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/mixture-of-parts.png" alt="图5. arm 的 Mixtures示意图"></p>
+<p>本文还提出了重要的mixture of parts的概念(图5): 因为每类part的外观因为视角等因素, 外观其实很不相同, 因此作者将每个part根据与其parent的位置关系来聚类, 这样每个part就聚类得到K个cluster, 也就是mixture. 这样模型就变成了下面形式</p>
+<p><span>$$S(I, L, M) = \sum_{i\in V}\alpha_i^{m_i} \cdot \phi(I, l_i) + \sum_{ij \in E}\beta_{ij}^{m_im_j}\cdot \psi(l_i, l_j) + S(M).$$</span><br>其中$m_i$表示第i个part所属的mixture. $S(M)$表示mixture间的相容性, 如图6所示.</p>
+<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/cooccurence.png" alt="图6. Mixture of Parts的相关性统计"></p>
 <h2 id="Inference_模型推理">Inference 模型推理</h2>
 <p>Inference解决的是如下问题:</p>
 <p><span>$$\arg\max_{L, M}S(I, L, M).$$</span><br>因为是tree structure, 所以容易通过动态规划来求解.</p>
