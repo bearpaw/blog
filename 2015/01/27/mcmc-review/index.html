@@ -4,17 +4,32 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: human detection | Pumpkin</title>
+  <title>Markov Chain Monte Carlo 学习笔记 | Pumpkin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Be grateful for each new day">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Pumpkin">
-<meta property="og:url" content="http://bearpaw.github.io/blog/blog/tags/human-detection/">
+  <meta name="description" content="贝叶斯方法中经常需要估计一个概率模型的后验概率分布或数学期望, 这往往是难以计算的. 因此, 人们提出了Markov Chain Monte Carlo (MCMC)方法, 来模拟直接从某个概率分布抽样. 本文将对MCMC方法的问题背景, 理论支持, 采样算法及应用等方面对MCMC方法进行学习.
+背景
+重要性采样
+马尔科夫链(Markov Chain)
+采样算法
+Matropolis Sampli">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Markov Chain Monte Carlo 学习笔记">
+<meta property="og:url" content="http://bearpaw.github.io/blog/blog/2015/01/27/mcmc-review/">
 <meta property="og:site_name" content="Pumpkin">
-<meta property="og:description" content="Be grateful for each new day">
+<meta property="og:description" content="贝叶斯方法中经常需要估计一个概率模型的后验概率分布或数学期望, 这往往是难以计算的. 因此, 人们提出了Markov Chain Monte Carlo (MCMC)方法, 来模拟直接从某个概率分布抽样. 本文将对MCMC方法的问题背景, 理论支持, 采样算法及应用等方面对MCMC方法进行学习.
+背景
+重要性采样
+马尔科夫链(Markov Chain)
+采样算法
+Matropolis Sampli">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Pumpkin">
-<meta name="twitter:description" content="Be grateful for each new day">
+<meta name="twitter:title" content="Markov Chain Monte Carlo 学习笔记">
+<meta name="twitter:description" content="贝叶斯方法中经常需要估计一个概率模型的后验概率分布或数学期望, 这往往是难以计算的. 因此, 人们提出了Markov Chain Monte Carlo (MCMC)方法, 来模拟直接从某个概率分布抽样. 本文将对MCMC方法的问题背景, 理论支持, 采样算法及应用等方面对MCMC方法进行学习.
+背景
+重要性采样
+马尔科夫链(Markov Chain)
+采样算法
+Matropolis Sampli">
 
   
     <link rel="alternative" href="/blog/atom.xml" title="Pumpkin" type="application/atom+xml">
@@ -81,16 +96,14 @@
   </div>
 </header>
     <div class="outer">
-      <section id="main">
-  
-    <article id="post-hog-feature" class="article article-type-post" itemscope itemprop="blogPost">
+      <section id="main"><article id="post-mcmc-review" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2015/01/26/hog-feature/" class="article-date">
-  <time datetime="2015-01-26T01:07:16.000Z" itemprop="datePublished">1月 26 2015</time>
+    <a href="/blog/2015/01/27/mcmc-review/" class="article-date">
+  <time datetime="2015-01-27T11:42:02.000Z" itemprop="datePublished">1月 27 2015</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/blog/categories/论文笔记/">论文笔记</a>
+    <a class="article-category-link" href="/blog/categories/机器学习/">机器学习</a>
   </div>
 
   </div>
@@ -100,47 +113,72 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/01/26/hog-feature/">Histograms of Oriented Gradients for Human Detection</a>
+    <h1 class="article-title" itemprop="name">
+      Markov Chain Monte Carlo 学习笔记
     </h1>
   
 
       </header>
     
     <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>Dalal, Navneet, and Bill Triggs. <em>“Histograms of oriented gradients for human detection.”</em> CVPR 2005. </p>
-</blockquote>
-<h2 id="概述">概述</h2>
-<p>基于梯度方向直方图的用于Human Detection的经典特征. 该方法适合shape-based object.<br>
-        
-          <p class="article-more-link">
-            <a href="/blog/2015/01/26/hog-feature/#more">Read More</a>
-          </p>
-        
+      	  
+		<!-- 文章目录开始 -->
+		
+			<div id="toc" class="toc-article">
+				<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#重要性采样"><span class="toc-number">2.</span> <span class="toc-text">重要性采样</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#马尔科夫链(Markov_Chain)"><span class="toc-number">3.</span> <span class="toc-text">马尔科夫链(Markov Chain)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#采样算法"><span class="toc-number">4.</span> <span class="toc-text">采样算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Matropolis_Sampling"><span class="toc-number">4.1.</span> <span class="toc-text">Matropolis Sampling</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Matropolis-Hasting_Sampling"><span class="toc-number">4.2.</span> <span class="toc-text">Matropolis-Hasting Sampling</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Gibbs_Sampling"><span class="toc-number">4.3.</span> <span class="toc-text">Gibbs Sampling</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文献"><span class="toc-number">5.</span> <span class="toc-text">参考文献</span></a></li></ol>
+			</div>
+		
+		<!-- 文章目录结束 -->
+        <p>贝叶斯方法中经常需要估计一个概率模型的后验概率分布或数学期望, 这往往是难以计算的. 因此, 人们提出了Markov Chain Monte Carlo (MCMC)方法, 来模拟直接从某个概率分布抽样. 本文将对MCMC方法的问题背景, 理论支持, 采样算法及应用等方面对MCMC方法进行学习.</p>
+<h2 id="背景">背景</h2>
+<h2 id="重要性采样">重要性采样</h2>
+<h2 id="马尔科夫链(Markov_Chain)">马尔科夫链(Markov Chain)</h2>
+<h2 id="采样算法">采样算法</h2>
+<h3 id="Matropolis_Sampling">Matropolis Sampling</h3>
+<h3 id="Matropolis-Hasting_Sampling">Matropolis-Hasting Sampling</h3>
+<h3 id="Gibbs_Sampling">Gibbs Sampling</h3>
+<h2 id="参考文献">参考文献</h2>
+<ol>
+<li><a href="http://www.52nlp.cn/lda-math-mcmc-%E5%92%8C-gibbs-sampling1" target="_blank" rel="external">LDA-math-MCMC 和 Gibbs Sampling</a></li>
+<li><a href="http://web.mit.edu/~wingated/www/introductions/mcmc-gibbs-intro.pdf" target="_blank" rel="external">Markov Chain Monte Carlo and Gibbs Sampling</a></li>
+</ol>
+
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/01/26/hog-feature/" data-id="ovoafq0m2ah9fqso" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/2015/01/27/mcmc-review/" data-id="ohqfiqtrc7m9l0pi" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
-        <a href="http://bearpaw.github.io/blog/2015/01/26/hog-feature/#ds-thread" class="article-comment-link">Comments</a>
+        <a href="http://bearpaw.github.io/blog/2015/01/27/mcmc-review/#ds-thread" class="article-comment-link">Comments</a>
       
 
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/HOG/">HOG</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/feature/">feature</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/human-detection/">human detection</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/MCMC/">MCMC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/sampling/">sampling</a></li></ul>
 
     </footer>
   </div>
   
+    
+<nav id="article-nav">
+  
+  
+    <a href="/blog/2015/01/26/mixtures-of-parts/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Articulated Pose Estimation with Flexible Mixtures of Parts</div>
+    </a>
+  
+</nav>
+
+  
 </article>
 
 
-  
-  
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2015/01/27/mcmc-review/" data-title="Markov Chain Monte Carlo 学习笔记" data-url="http://bearpaw.github.io/blog/2015/01/27/mcmc-review/"></div>
+  </section>
 </section>
       
       <aside id="sidebar">

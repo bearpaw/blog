@@ -26,6 +26,15 @@
 
   <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
   
+  
+  <script type="text/javascript">
+    (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+    })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+    _st('install','C3e3fw-XzPj6xPmhGvHa');
+  </script>
 </head>
 <body>
 <div id="container">
@@ -60,21 +69,83 @@
         
         <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
-      <div id="search-form-wrap">
-        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
-          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
-          <input type="submit" value="" class="search-form-submit">
-          <input name=tn type=hidden value="bds">
-          <input name=cl type=hidden value="3">
-          <input name=ct type=hidden value="2097152">
-          <input type="hidden" name="si" value="bearpaw.github.io/blog">
-        </form>
-      </div>
+      
+        <div id="search-form-wrap">
+          <form class="search-form" action="/blog/search/index.html" method="get" accept-charset="utf-8">
+              <input type="text" id="st-search-input" class="search-form-input" placeholder="Search" />
+              <input type="submit" value="" class="search-form-submit"> 
+           </form>
+        </div>
+      
     </div>
   </div>
 </header>
     <div class="outer">
       <section id="main">
+  
+    <article id="post-mcmc-review" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2015/01/27/mcmc-review/" class="article-date">
+  <time datetime="2015-01-27T11:42:02.000Z" itemprop="datePublished">1月 27 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/机器学习/">机器学习</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2015/01/27/mcmc-review/">Markov Chain Monte Carlo 学习笔记</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      	  
+		<!-- 文章目录开始 -->
+		
+		<!-- 文章目录结束 -->
+        <p>贝叶斯方法中经常需要估计一个概率模型的后验概率分布或数学期望, 这往往是难以计算的. 因此, 人们提出了Markov Chain Monte Carlo (MCMC)方法, 来模拟直接从某个概率分布抽样. 本文将对MCMC方法的问题背景, 理论支持, 采样算法及应用等方面对MCMC方法进行学习.</p>
+<h2 id="背景">背景</h2>
+<h2 id="重要性采样">重要性采样</h2>
+<h2 id="马尔科夫链(Markov_Chain)">马尔科夫链(Markov Chain)</h2>
+<h2 id="采样算法">采样算法</h2>
+<h3 id="Matropolis_Sampling">Matropolis Sampling</h3>
+<h3 id="Matropolis-Hasting_Sampling">Matropolis-Hasting Sampling</h3>
+<h3 id="Gibbs_Sampling">Gibbs Sampling</h3>
+<h2 id="参考文献">参考文献</h2>
+<ol>
+<li><a href="http://www.52nlp.cn/lda-math-mcmc-%E5%92%8C-gibbs-sampling1" target="_blank" rel="external">LDA-math-MCMC 和 Gibbs Sampling</a></li>
+<li><a href="http://web.mit.edu/~wingated/www/introductions/mcmc-gibbs-intro.pdf" target="_blank" rel="external">Markov Chain Monte Carlo and Gibbs Sampling</a></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://bearpaw.github.io/blog/2015/01/27/mcmc-review/" data-id="ohqfiqtrc7m9l0pi" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://bearpaw.github.io/blog/2015/01/27/mcmc-review/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/MCMC/">MCMC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/sampling/">sampling</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-mixtures-of-parts" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -201,7 +272,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">2</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -210,7 +281,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -219,7 +290,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/blog/tags/DPM/" style="font-size: 10.00px;">DPM</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 10.00px;">articulated pose estimation</a><a href="/blog/tags/feature/" style="font-size: 10.00px;">feature</a><a href="/blog/tags/human-detection/" style="font-size: 10.00px;">human detection</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 10.00px;">mixtures of parts</a><a href="/blog/tags/pictorial-model/" style="font-size: 10.00px;">pictorial model</a>
+      <a href="/blog/tags/DPM/" style="font-size: 10.00px;">DPM</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/MCMC/" style="font-size: 10.00px;">MCMC</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 10.00px;">articulated pose estimation</a><a href="/blog/tags/feature/" style="font-size: 10.00px;">feature</a><a href="/blog/tags/human-detection/" style="font-size: 10.00px;">human detection</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 10.00px;">mixtures of parts</a><a href="/blog/tags/pictorial-model/" style="font-size: 10.00px;">pictorial model</a><a href="/blog/tags/sampling/" style="font-size: 10.00px;">sampling</a>
     </div>
   </div>
 
@@ -228,7 +299,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -238,6 +309,10 @@
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/blog/2015/01/27/mcmc-review/">Markov Chain Monte Carlo 学习笔记</a>
+          </li>
         
           <li>
             <a href="/blog/2015/01/26/mixtures-of-parts/">Articulated Pose Estimation with Flexible Mixtures of Parts</a>
