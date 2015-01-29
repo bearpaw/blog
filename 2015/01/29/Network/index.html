@@ -156,19 +156,13 @@
 <p>fc6-conv weights are (4096, 256, 6, 6) dimensional and biases are (1, 1, 1, 4096) dimensional<br>fc7-conv weights are (4096, 4096, 1, 1) dimensional and biases are (1, 1, 1, 4096) dimensional<br>fc8-conv weights are (1000, 4096, 1, 1) dimensional and biases are (1, 1, 1, 1000) dimensional</p>
 </blockquote>
 <p>可以得知， conv层数据组织方式为 （输出Channel数， 输入channel数， 输入feature map高， 输入featuremap宽）。因此，我们需要把FC层的参数reshape为 channel × height × width.</p>
-<ol>
-<li>修改bias</li>
-</ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> pr, pr_conv <span class="keyword">in</span> zip(params, params_full_conv):</div><div class="line">    conv_params[pr_conv][<span class="number">1</span>][...] = fc_params[pr][<span class="number">1</span>]</div></pre></td></tr></table></figure>
+<p>第1步: 修改bias</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> pr, pr_conv <span class="keyword">in</span> zip(params, params_full_conv):</div><div class="line">	conv_params[pr_conv][<span class="number">1</span>][...] = fc_params[pr][<span class="number">1</span>]</div></pre></td></tr></table></figure>
 
-<ol>
-<li>修改weight</li>
-</ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> pr, pr_conv <span class="keyword">in</span> zip(params, params_full_conv):</div><div class="line">    out, in_, h, w = conv_params[pr_conv][<span class="number">0</span>].shape</div><div class="line">    W = fc_params[pr][<span class="number">0</span>].reshape((out, in_, h, w))</div><div class="line">    conv_params[pr_conv][<span class="number">0</span>][...] = W</div></pre></td></tr></table></figure>
+<p>第2步: 修改weight</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> pr, pr_conv <span class="keyword">in</span> zip(params, params_full_conv):</div><div class="line">	out, in_, h, w = conv_params[pr_conv][<span class="number">0</span>].shape</div><div class="line">	W = fc_params[pr][<span class="number">0</span>].reshape((out, in_, h, w))</div><div class="line">	conv_params[pr_conv][<span class="number">0</span>][...] = W</div></pre></td></tr></table></figure>
 
-<ol>
-<li>保存模型</li>
-</ol>
+<p>第3步: 保存模型</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">net_full_conv.save(<span class="string">'imagenet/bvlc_caffenet_full_conv.caffemodel'</span>)</div></pre></td></tr></table></figure>
 
 <h2 id="实验结果">实验结果</h2>
