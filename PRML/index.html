@@ -1,19 +1,20 @@
 
+
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   
-  <title>Category: 工具 | Pumpkin</title>
+  <title>PRML | Pumpkin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Be grateful for each new day">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Pumpkin">
-<meta property="og:url" content="http://bearpaw.github.io/blog/blog/categories/工具/">
+<meta property="og:title" content="PRML">
+<meta property="og:url" content="http://bearpaw.github.io/blog/blog/PRML/index.html">
 <meta property="og:site_name" content="Pumpkin">
 <meta property="og:description" content="Be grateful for each new day">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Pumpkin">
+<meta name="twitter:title" content="PRML">
 <meta name="twitter:description" content="Be grateful for each new day">
 <link rel="publisher" href="https://plus.google.com/u/0/+WeiYangplatero">
 
@@ -82,18 +83,12 @@
   </div>
 </header>
     <div class="outer">
-      <section id="main">
-  
-    <article id="post-Network" class="article article-type-post" itemscope itemprop="blogPost">
+      <section id="main"><article id="page-undefined" class="article article-type-page" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2015/01/29/Network/" class="article-date">
-  <time datetime="2015-01-29T07:52:37.000Z" itemprop="datePublished">1月 29 2015</time>
+    <a href="/blog/PRML/index.html" class="article-date">
+  <time datetime="2015-02-04T15:29:06.000Z" itemprop="datePublished">2月 4 2015</time>
 </a>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/blog/categories/工具/">工具</a>
-  </div>
-
   </div>
   <div class="article-inner">
     
@@ -101,47 +96,47 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/01/29/Network/">Caffe 将全连接网络转化为全卷积网络</a>
+    <h1 class="article-title" itemprop="name">
+      PRML
     </h1>
   
 
       </header>
     
     <div class="article-entry" itemprop="articleBody">
-      
-        <p>当我们用Caffe训练好一个网络，希望用其进行测试时，我们会写一个deploy.prototxt, 以CaffeNet为例，该文件的前几行是这样的：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">name</span>: <span class="string">"CaffeNet"</span></div><div class="line"><span class="attribute">input</span>: <span class="string">"data"</span></div><div class="line"><span class="attribute">input_dim</span>: <span class="string">10</span></div><div class="line"><span class="attribute">input_dim</span>: <span class="string">3</span></div><div class="line"><span class="attribute">input_dim</span>: <span class="string">227</span></div><div class="line"><span class="attribute">input_dim</span>: <span class="string">227</span></div></pre></td></tr></table></figure>
-
-<p>其中前两行分别是网络的名称，输入层blob的名字， 以及数据维度(n, c, h, w). 这样我们就能对大小与训练数据大小一致的图像进行分类。然而有时候我们希望对不同大小的图像进行测试，如果以这些图像进行输入，那么在卷积层结束进入全连接（Fully Connected, FC）层时，程序会发现FC层的输入和训练时的输入不一致，导致程序崩溃。一个处理方法是将输入图像resize到标准大小，然后这样可能会导致图像失真，因此有时我们需要将网络转化为全卷积网络。</p>
-<p>
-        
-          <p class="article-more-link">
-            <a href="/blog/2015/01/29/Network/#more">Read More</a>
-          </p>
+      	  
+		<!-- 文章目录开始 -->
+		
+			<div id="toc" class="toc-article">
+				<strong class="toc-title">文章目录</strong>
+			
+			</div>
+		
+		<!-- 文章目录结束 -->
         
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/01/29/Network/" data-id="8e9mdgi9wsplnj0n" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/PRML/index.html" data-id="62abkp7rwhodnjie" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
-        <a href="http://bearpaw.github.io/blog/2015/01/29/Network/#ds-thread" class="article-comment-link">Comments</a>
+        <a href="http://bearpaw.github.io/blog/PRML/index.html#ds-thread" class="article-comment-link">Comments</a>
       
 
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Caffe/">Caffe</a></li></ul>
-
     </footer>
   </div>
+  
+    
   
 </article>
 
 
-  
-  
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="PRML/index.html" data-title="PRML" data-url="http://bearpaw.github.io/blog/PRML/index.html"></div>
+  </section>
 </section>
       
       <aside id="sidebar">
@@ -372,3 +367,4 @@ MathJax.Hub.Queue(function() {
 </script>
 </body>
 </html>
+

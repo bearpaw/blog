@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Linear Regression | Pumpkin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="引子
+如图1所示, 我们以一个不够恰当的例子来引入线性回归的问题: 假设横轴表示焦虑程度, 纵轴表示抽烟的根数, 蓝点表示历史数据. 我们想要了解这样的问题: 假设今天我的焦虑程度为31, 能否根据历史数据预测我今天的抽烟根数?">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linear Regression">
+<meta property="og:url" content="http://bearpaw.github.io/blog/blog/2015/02/06/Linear-Regression/">
+<meta property="og:site_name" content="Pumpkin">
+<meta property="og:description" content="引子
+如图1所示, 我们以一个不够恰当的例子来引入线性回归的问题: 假设横轴表示焦虑程度, 纵轴表示抽烟的根数, 蓝点表示历史数据. 我们想要了解这样的问题: 假设今天我的焦虑程度为31, 能否根据历史数据预测我今天的抽烟根数?">
+<meta property="og:image" content="http://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Linear_regression.svg/438px-Linear_regression.svg.png">
+<meta property="og:image" content="http://7u2pi6.com1.z0.glb.clouddn.com/blog/grad.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linear Regression">
+<meta name="twitter:description" content="引子
+如图1所示, 我们以一个不够恰当的例子来引入线性回归的问题: 假设横轴表示焦虑程度, 纵轴表示抽烟的根数, 蓝点表示历史数据. 我们想要了解这样的问题: 假设今天我的焦虑程度为31, 能否根据历史数据预测我今天的抽烟根数?">
+<link rel="publisher" href="https://plus.google.com/u/0/+WeiYangplatero">
+
+  
+    <link rel="alternative" href="/blog/atom.xml" title="Pumpkin" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/blog/favicon.ico">
+  
+  <link rel="stylesheet" href="/blog/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+  
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v1/st.js','_st');
+
+  _st('install','C3e3fw-XzPj6xPmhGvHa');
+</script>
+</head>
+<body>
+<div id="container">
+  <div id="wrap">
+    <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/blog/" id="logo">Pumpkin</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/blog/" id="subtitle">不积跬步，无以至千里 / 不积小流，无以成江海</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/blog/">Blog</a>
+        
+          <a class="main-nav-link" href="/blog/archives">Archives</a>
+        
+          <a class="main-nav-link" href="http://bearpaw.github.io">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/blog/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      
+        <div id="search-form-wrap">
+          <form class="search-form" action="/blog/search/index.html" method="get" accept-charset="utf-8">
+              <input type="text" id="st-search-input" class="search-form-input" placeholder="Search" />
+              <input type="submit" value="" class="search-form-submit"> 
+           </form>
+        </div>
+      
+    </div>
+  </div>
+</header>
+    <div class="outer">
+      <section id="main"><article id="post-Linear-Regression" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2015/02/06/Linear-Regression/" class="article-date">
+  <time datetime="2015-02-06T05:48:00.000Z" itemprop="datePublished">2月 6 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/知识库/">知识库</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Linear Regression
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      	  
+		<!-- 文章目录开始 -->
+		
+			<div id="toc" class="toc-article">
+				<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引子"><span class="toc-number">1.</span> <span class="toc-text">引子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#模型"><span class="toc-number">2.</span> <span class="toc-text">模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">3.</span> <span class="toc-text">代价函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">4.</span> <span class="toc-text">优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#undefined"><span class="toc-number">4.1.</span> <span class="toc-text">梯度下降法介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#undefined"><span class="toc-number">4.2.</span> <span class="toc-text">Gradient Descent in Linear Regression</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Matlab实现"><span class="toc-number">5.</span> <span class="toc-text">Matlab实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#讨论"><span class="toc-number">6.</span> <span class="toc-text">讨论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文献"><span class="toc-number">7.</span> <span class="toc-text">参考文献</span></a></li></ol>
+			</div>
+		
+		<!-- 文章目录结束 -->
+        <p><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Linear_regression.svg/438px-Linear_regression.svg.png" alt="图1. Linear regression"></p>
+<h2 id="引子">引子</h2>
+<p>如图1所示, 我们以一个不够恰当的例子来引入线性回归的问题: 假设横轴表示焦虑程度, 纵轴表示抽烟的根数, 蓝点表示历史数据. 我们想要了解这样的问题: 假设今天我的焦虑程度为31, 能否根据历史数据预测我今天的抽烟根数?</p>
+<a id="more"></a>
+
+<h2 id="模型">模型</h2>
+<p>首先来说明一下notation: $\{(x^i, y^i)\}_{i=1}^m$表示训练样本集合, 其中$(x^i, y^i)$代表了第i个样本, $x^i$是$n$维的特征向量, $y^i$是样本标签, 在回归问题中是连续值. </p>
+<p>我们希望给定一个样本特征$x$, 能够通过一个数学模型$h_\theta(x)$预测样本标签. 如果数学模型是线性的, 则称为线性回归</p>
+<span>$$h_\theta(x) = \sum_{j=0}^m \theta_j\cdot x_j = \theta^T x$$</span><br>这里$x_j, \theta_j$分别表示$x, \theta$的第$j$个元素. $\theta_0$是偏置项(bias), $x_0 = 1$.<br><br><h2>代价函数</h2><br>有了线性模型后, 如何选择合适的模型参数$\theta$呢? 直观说来, 我们希望在训练数据集上, 预测标签$h_\theta(x^i)$与真实标签$y^i$越接近越好. 因此, 我们可以用Square Loss作为模型的代价函数(Cost Function):<br><span>$$J(\theta) = \frac{1}{2}\cdot \frac{1}{m}\sum_i^m \left(h_\theta(x^i) - y^i\right)^2 $$</span><br>其中$\frac{1}{2}$是为了优化时求导方便.<br><br><h2>优化</h2><br>定义了代价函数之后, 就能通过最小化代价函数来求解最优模型参数<span>$\theta^*$</span>:<br><span>$$\theta^* = \min_\theta J(\theta)$$</span><br>这里介绍经典的迭代优化算法: 梯度下降法 (Gradient Descent).<br><br><h3>梯度下降法介绍</h3><br>直观上看, 一个迭代优化算法应该能实现下面目标:<br>- 初始化参数为$\theta^0$<br>- 不断调整$\theta$, 使得$J(\theta)$在训练集上不断减小, 直到到达局部最小.<br><br>梯度下降算法就是朝着梯度下降的方向来更新参数, 来最小化代价函数$J(\theta)$:<br><br><span>$$\theta_j := \theta_j - \alpha \frac{\partial J(\theta)}{\partial \theta_j}, \forall j.$$</span><br>其中$\alpha &gt; 0$是学习率, 用于调整每一步$\theta$更新的步长: 学习率太小收敛速度慢, 学习率太大可能会造成不收敛甚至发散.<br><br><br><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/grad.png" alt="图2. 梯度下降法原理"><br>为什么沿着<span>$-  \frac{\partial J(\theta)}{\partial \theta_j}$</span>能减小代价函数呢? 如图2上半部分所示, 假定蓝点为起始$\theta$, 我们计算它的梯度<span>$\frac{\partial J(\theta)}{\partial \theta_j}$</span>, 也就是蓝色线, 注意梯度也就是斜率, 这时候蓝色线的斜率是正的, 因此<span>$-  \alpha \frac{\partial J(\theta)}{\partial \theta_j}$</span> 就是一个负数, 会朝着左边移动, 也就是朝着局部最小的方向移动.<br><br>图2下半部分所示, 假定蓝点为起始$\theta$, 我们计算它的梯度<span>$\frac{\partial J(\theta)}{\partial \theta_j}$</span>, 这时候梯度是$<0$的, 因此<span="">$-  \alpha \frac{\partial J(\theta)}{\partial \theta_j}$ 就是一个正数, $\theta$会向右移动, 同样朝局部最小的方向移动.<br><br>通过上述观察我们还知道, $\alpha$的大小不需要随着迭代次数增加而减少, 这是因为梯度大小(即斜率)在不断减小, 所以更新步长也会越来越小.<br><br><h3>Gradient Descent in Linear Regression</h3><br>对于线性规划问题, 我们已经定义了代价函数, 关键在于求代价函数关于参数的梯度, 这个梯度很容易通过链式法则求得.<br><span>$$\frac{\partial J(\theta)}{\partial \theta_j} = \frac{1}{m}\sum_i^m (\theta^T x^i - y^i)\cdot x^i_j, \forall j.$$</span>
+
+<p>注意上式是对$\theta$的每一维求导, 实现起来复杂, 并且效率低. 我们可以将上式写成等价的向量形式 (注意各个部分的维度):</p>
+<span>$$\overbrace{\frac{\partial J(\theta)}{\partial \theta}}^{R^{n+1}} = \frac{1}{m}\sum_i^m \overbrace{(\theta^T x^i - y^i)}^R \overbrace{x^i}^{R^{n+1}}, \forall j.$$</span>
+
+<p>在上述优化过程中, 每一次迭代的计算都用上了所有的训练样本, 这样的梯度下降法称为: <strong> batch gradient descent</strong>.</p>
+<h2 id="Matlab实现">Matlab实现</h2>
+<p>这里提供了Andrew Ng公开课的<a href="http://openclassroom.stanford.edu/MainFolder/DocumentPage.php?course=DeepLearning&amp;doc=exercises/ex2/ex2.html" target="_blank" rel="external">练习</a>的Matlab实现:</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">linear_regression</span></span></div><div class="line"><span class="comment">%-------------------------</span></div><div class="line"><span class="comment">% load data</span></div><div class="line">x = load(<span class="string">'ex2x.dat'</span>);</div><div class="line">y = load(<span class="string">'ex2y.dat'</span>);</div><div class="line"></div><div class="line">figure <span class="comment">% open a new figure window</span></div><div class="line">subplot(<span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>);</div><div class="line">plot(x, y, <span class="string">'o'</span>);</div><div class="line">ylabel(<span class="string">'Height in meters'</span>)</div><div class="line">xlabel(<span class="string">'Age in years'</span>)</div><div class="line"></div><div class="line">m = <span class="built_in">length</span>(y); <span class="comment">% store the number of training examples</span></div><div class="line">x = <span class="matrix">[ones(m, <span class="number">1</span>), x]</span>; <span class="comment">% Add a column of ones to x</span></div><div class="line"></div><div class="line"><span class="comment">%-------------------------</span></div><div class="line"><span class="comment">% Set parameters</span></div><div class="line">theta = <span class="matrix">[<span class="number">0</span>; <span class="number">0</span>]</span>;</div><div class="line">alpha = <span class="number">0.07</span>;</div><div class="line">maxiter = <span class="number">10000</span>;</div><div class="line">cost = <span class="built_in">zeros</span>(maxiter, <span class="number">1</span>);</div><div class="line">epsilon = <span class="number">1e-9</span>;</div><div class="line"><span class="comment">%-----------------------</span></div><div class="line"><span class="comment">% Batch Gradient Descent</span></div><div class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:maxiter</div><div class="line">    cost(<span class="built_in">i</span>) = J_cost(theta, x, y);</div><div class="line">    grad = J_grad(theta, x, y);</div><div class="line">    theta = theta - alpha * grad;</div><div class="line">    <span class="keyword">if</span> <span class="built_in">i</span>&gt;<span class="number">1</span> && <span class="built_in">abs</span>(cost(<span class="built_in">i</span>) - cost(<span class="built_in">i</span>-<span class="number">1</span>)) &lt; epsilon</div><div class="line">        <span class="keyword">break</span>;</div><div class="line">    <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div><div class="line"><span class="comment">%----------------------</span></div><div class="line"><span class="comment">% Plot regression result</span></div><div class="line">hold on <span class="comment">% Plot new data without clearing old plot</span></div><div class="line">plot(x(:,<span class="number">2</span>), x*theta, <span class="string">'-'</span>) <span class="comment">% remember that x is now a matrix with 2 columns</span></div><div class="line">                           <span class="comment">% and the second column contains the time info</span></div><div class="line">legend(<span class="string">'Training data'</span>, <span class="string">'Linear regression'</span>)</div><div class="line"></div><div class="line"></div><div class="line">subplot(<span class="number">2</span>, <span class="number">2</span>, <span class="number">2</span>);</div><div class="line">plot(<span class="matrix">[<span class="number">1</span>:i]</span>, cost(<span class="number">1</span>:<span class="built_in">i</span>));</div><div class="line">ylabel(<span class="string">'Cost'</span>)</div><div class="line">xlabel(<span class="string">'Iterations'</span>)</div><div class="line"><span class="comment">%----------------------</span></div><div class="line"><span class="comment">% Plot 3D Cost Function</span></div><div class="line">J_vals = <span class="built_in">zeros</span>(<span class="number">100</span>, <span class="number">100</span>);   <span class="comment">% initialize Jvals to 100x100 matrix of 0's</span></div><div class="line">theta0_vals = <span class="built_in">linspace</span>(-<span class="number">3</span>, <span class="number">3</span>, <span class="number">100</span>);</div><div class="line">theta1_vals = <span class="built_in">linspace</span>(-<span class="number">1</span>, <span class="number">1</span>, <span class="number">100</span>);</div><div class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:<span class="built_in">length</span>(theta0_vals)</div><div class="line">	  <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span>:<span class="built_in">length</span>(theta1_vals)</div><div class="line">	  t = <span class="matrix">[theta0_vals(i); theta1_vals(j)]</span>;</div><div class="line">	  J_vals(<span class="built_in">i</span>,<span class="built_in">j</span>) = J_cost(t, x, y);</div><div class="line">    <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="comment">%----------------------</span></div><div class="line"><span class="comment">% Plot the surface plot</span></div><div class="line"><span class="comment">% Because of the way meshgrids work in the surf command, we need to </span></div><div class="line"><span class="comment">% transpose J_vals before calling surf, or else the axes will be flipped</span></div><div class="line">subplot(<span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>);</div><div class="line">J_vals = <span class="transposed_variable">J_vals'</span></div><div class="line">surf(theta0_vals, theta1_vals, J_vals)</div><div class="line">xlabel(<span class="string">'\theta_0'</span>); ylabel(<span class="string">'\theta_1'</span>)</div><div class="line">subplot(<span class="number">2</span>, <span class="number">2</span>, <span class="number">4</span>);</div><div class="line"><span class="comment">% Plot the cost function with 15 contours spaced logarithmically</span></div><div class="line"><span class="comment">% between 0.01 and 100</span></div><div class="line">contour(theta0_vals, theta1_vals, J_vals, <span class="built_in">logspace</span>(-<span class="number">2</span>, <span class="number">2</span>, <span class="number">15</span>))</div><div class="line">xlabel(<span class="string">'\theta_0'</span>); ylabel(<span class="string">'\theta_1'</span>)</div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">cost</span> = <span class="title">J_cost</span><span class="params">(theta, x, y)</span></span></div><div class="line">    m = <span class="built_in">length</span>(y);</div><div class="line">    cost = <span class="number">0.5</span>*sum((x*theta - y).^<span class="number">2</span>)/m;</div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">grad</span> = <span class="title">J_grad</span><span class="params">(theta, x, y)</span></span></div><div class="line">    m = <span class="built_in">length</span>(y);</div><div class="line">    n = <span class="built_in">size</span>(x, <span class="number">2</span>);</div><div class="line">    grad = (sum(<span class="built_in">repmat</span>((x*theta - y), <span class="number">1</span>, n).*x)/m)<span class="string">';</span></div><div class="line">end</div></pre></td></tr></table></figure>
+
+<h2 id="讨论">讨论</h2>
+<p><strong>特征尺度</strong>: 如房屋售价由两个特征决定, 第一个是面积, 范围是0-2000ft, 另一个是卧室数量, 范围是0-4. 这样代价函数的level-set图就是非常陡的椭圆. 不利于梯度下降法. 因此我们一般会对feature做归一化:</p>
+<p><span>$$x = \frac{x - mean(x)}{max(x) - min(x)}$$</span><br>注意分母也可以用x的标准差来代替. </p>
+<p><strong>收敛条件</strong>: 如果代价函数的值与上一轮相比相差小于一个很小的正数$\epsilon$, 那么说明收敛: <span>$| J\theta^{t+1}) - J(\theta^t)| < \epsilon$</span>. </p>
+<p><strong>学习率</strong>: 学习率的选择由具体问题而定. 通常可以以10倍为间隔, 尝试0.001, 0.01, 0.1, 1, … 等不同学习率的效果, 选择代价函数下降最快的学习率用于训练.</p>
+<h2 id="参考文献">参考文献</h2>
+<ol>
+<li><a href="http://openclassroom.stanford.edu/MainFolder/CoursePage.php?course=DeepLearning" target="_blank" rel="external"><strong>OpenClassroom-Deep Learning</strong></a>, Samy Bengio, Tom Dean and Andrew Ng</li>
+</ol>
+</0$的,>
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://bearpaw.github.io/blog/2015/02/06/Linear-Regression/" data-id="b29g5xstfi8nv57c" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://bearpaw.github.io/blog/2015/02/06/Linear-Regression/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/linear-regression/">linear regression</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/blog/2015/02/09/Logistic-Regression/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Logistic Regression
+        
+      </div>
+    </a>
+  
+  
+    <a href="/blog/2015/02/05/hinge-loss/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hinge Loss</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2015/02/06/Linear-Regression/" data-title="Linear Regression" data-url="http://bearpaw.github.io/blog/2015/02/06/Linear-Regression/"></div>
+  </section>
+</section>
+      
+      <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/工具/">工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/知识库/">知识库</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Caffe/">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/classification/">classification</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/linear-regression/">linear regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/blog/tags/Caffe/" style="font-size: 10.00px;">Caffe</a><a href="/blog/tags/DPM/" style="font-size: 10.00px;">DPM</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/Logistic-regression/" style="font-size: 10.00px;">Logistic regression</a><a href="/blog/tags/MCMC/" style="font-size: 10.00px;">MCMC</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 10.00px;">articulated pose estimation</a><a href="/blog/tags/classification/" style="font-size: 10.00px;">classification</a><a href="/blog/tags/feature/" style="font-size: 10.00px;">feature</a><a href="/blog/tags/gradient-descent/" style="font-size: 10.00px;">gradient descent</a><a href="/blog/tags/hinge-loss/" style="font-size: 10.00px;">hinge loss</a><a href="/blog/tags/human-detection/" style="font-size: 10.00px;">human detection</a><a href="/blog/tags/linear-regression/" style="font-size: 10.00px;">linear regression</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 10.00px;">mixtures of parts</a><a href="/blog/tags/pictorial-model/" style="font-size: 10.00px;">pictorial model</a><a href="/blog/tags/sampling/" style="font-size: 10.00px;">sampling</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/02/">February 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">4</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">近期文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blog/2015/02/09/Logistic-Regression/">Logistic Regression</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2015/02/06/Linear-Regression/">Linear Regression</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2015/02/05/hinge-loss/">Hinge Loss</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2015/01/29/Network/">Caffe 将全连接网络转化为全卷积网络</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2015/01/27/mcmc-review/">Markov Chain Monte Carlo 学习笔记</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://mmlab.ie.cuhk.edu.hk/" target="_blank">CUHK MMLAB</a>
+          </li>
+        
+          <li>
+            <a href="http://vision.sysu.edu.cn/" target="_blank">SYSU IMC LAB</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+      
+    </div>
+    <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2015 Plateo<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      .
+      Theme by <a href="https://github.com/xiangming/landscape-plus" target="_blank">Landscape-plus</a>
+    </div>
+  </div>
+</footer>
+  </div>
+  <nav id="mobile-nav">
+  
+    <a href="/blog/" class="mobile-nav-link">Blog</a>
+  
+    <a href="/blog/archives" class="mobile-nav-link">Archives</a>
+  
+    <a href="http://bearpaw.github.io" class="mobile-nav-link">About</a>
+  
+</nav>
+  <!-- totop start -->
+<div id="totop">
+<a title="返回顶部"><img src="/blog/img/scrollup.png"/></a>
+</div>
+
+<!-- totop end -->
+
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"platero"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"nocss.css"}};with(document)0[(getElementsByTagName("head")[0]||body).appendChild(createElement("script")).src="http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion="+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],displayMath: [['\\[','\\]'], ['$$','$$']],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+<script src="/blog/js/script.js" type="text/javascript"></script>
+
+
+</div>
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</body>
+</html>
