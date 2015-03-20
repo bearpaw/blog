@@ -6,15 +6,22 @@
   
   <title>Articulated Pose Estimation by a Graphical Model with Image Dependent Pairwise Relations | Pumpkin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Chen, Xianjie, and Alan L. Yuille. “Articulated pose estimation by a graphical model with image dependent pairwise relations.” Advances in Neural Information Processing Systems. 2014.">
+  <meta name="description" content="Chen, Xianjie, and Alan L. Yuille. “Articulated pose estimation by a graphical model with image dependent pairwise relations.” Advances in Neural Information Processing Systems. 2014.
+
+本文在YANG Yi工作的基">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Articulated Pose Estimation by a Graphical Model with Image Dependent Pairwise Relations">
 <meta property="og:url" content="http://bearpaw.github.io/blog/blog/2015/03/19/Articulated-Pose-Estimation-by-a-Graphical-Model-with-Image-Dependent-Pairwise-Relations/">
 <meta property="og:site_name" content="Pumpkin">
-<meta property="og:description" content="Chen, Xianjie, and Alan L. Yuille. “Articulated pose estimation by a graphical model with image dependent pairwise relations.” Advances in Neural Information Processing Systems. 2014.">
+<meta property="og:description" content="Chen, Xianjie, and Alan L. Yuille. “Articulated pose estimation by a graphical model with image dependent pairwise relations.” Advances in Neural Information Processing Systems. 2014.
+
+本文在YANG Yi工作的基">
+<meta property="og:image" content="http://www.stat.ucla.edu/~xianjie.chen/image/nips14_pose.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Articulated Pose Estimation by a Graphical Model with Image Dependent Pairwise Relations">
-<meta name="twitter:description" content="Chen, Xianjie, and Alan L. Yuille. “Articulated pose estimation by a graphical model with image dependent pairwise relations.” Advances in Neural Information Processing Systems. 2014.">
+<meta name="twitter:description" content="Chen, Xianjie, and Alan L. Yuille. “Articulated pose estimation by a graphical model with image dependent pairwise relations.” Advances in Neural Information Processing Systems. 2014.
+
+本文在YANG Yi工作的基">
 <link rel="publisher" href="https://plus.google.com/u/0/+WeiYangplatero">
 
   
@@ -112,13 +119,57 @@
 		
 			<div id="toc" class="toc-article">
 				<strong class="toc-title">文章目录</strong>
-			
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Motivation"><span class="toc-number">1.</span> <span class="toc-text">Motivation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Model"><span class="toc-number">2.</span> <span class="toc-text">Model</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#undefined"><span class="toc-number">2.1.</span> <span class="toc-text">Unary term</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Image_Dependent_Pairwise_Relational_(IDPR)_Terms"><span class="toc-number">2.2.</span> <span class="toc-text">Image Dependent Pairwise Relational (IDPR) Terms</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#undefined"><span class="toc-number">2.3.</span> <span class="toc-text"> 如何计算Unary中的appearance term和Pairwise relation中的IDPR term</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Inference"><span class="toc-number">3.</span> <span class="toc-text">Inference</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#快速求解_pairwise_term"><span class="toc-number">3.1.</span> <span class="toc-text">快速求解 pairwise term</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Learning"><span class="toc-number">4.</span> <span class="toc-text">Learning</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#有待研究"><span class="toc-number">5.</span> <span class="toc-text">有待研究</span></a></li></ol>
 			</div>
 		
 		<!-- 文章目录结束 -->
         <blockquote>
 <p>Chen, Xianjie, and Alan L. Yuille. “Articulated pose estimation by a graphical model with image dependent pairwise relations.” Advances in Neural Information Processing Systems. 2014.</p>
 </blockquote>
+<p>本文在YANG Yi工作的基础上, 利用CNN学习part detector以及pairwise part relations, 并利用图模型进行Inference, 从而估计出最终的pose.<br><img src="http://www.stat.ucla.edu/~xianjie.chen/image/nips14_pose.png" alt="图1. Motivation: 通过观察可以发现, local patch可以告诉我们两个信息. 1) 我们可以通过合适的local patch判断它是哪一个body part; 2) 在知道local patch是哪一个part后, 我们还可以看出其相邻的part可能出现的位置. 如中间的示例所示, 通过以elbow为中心的patch, 我们能够推理出shoulder和wrist的相对位置 (如左图); 通过以wrist为中心的patch, 我们能够推理出elbow的相对位置 (如右图). "></p>
+<p><a id="more"></a></p>
+<h2 id="Motivation">Motivation</h2>
+<p>本文方法的出发点是认为, 一个合适大小的local patch可以告诉我们两个信息. 1) 我们可以通过合适的local patch判断它是哪一个body part; 2) 在知道local patch是哪一个part后, 我们还可以看出其相邻的part可能出现的位置. 如图1所示. 因此, 基于part model的方法一般要具备part detection以及描述pairwise relation的能力. </p>
+<h2 id="Model">Model</h2>
+<p>和传统方法类似, 作者采用了一个图模型 (tree structure) 来表示human pose. 传统模型是有向图, 而本文更像是一个无向图. 图模型的full score定义如下</p>
+<span>$$F(l, t|I) = \sum_{i \in V} U(l_i | I) + \sum_{(i,j)\in E} R(l_i, l_j, t_{ij}, t_{ji} | I) + w_0.$$</span><br>其中<span>$w_0$</span>是偏置.<br><br><h3>Unary term</h3><br>所谓的Unary term其实就是一个part detector在图像上扫描得到的score map. 每一个score表示local patch <span>$I(l_i)$</span>被分类为第i类的分数. 数学表达式如下:<br><span>$$U(l_i | I) = w_i \phi(i | I(l_i); \theta).$$</span>
+
+<p>其中$\phi(i | I(l_i); \theta)$是apprearance term, $\theta$表示CNN学出来的参数. $w_i$是structure-svm学出来的参数.</p>
+<h3 id="Image_Dependent_Pairwise_Relational_(IDPR)_Terms">Image Dependent Pairwise Relational (IDPR) Terms</h3>
+<p>假如给定一个patch以part $i$ 为中心, 那么根据这个patch, IDPR能给出 $i$ 的所有neighbor $j$ 的相对位置 (这个相对位置在程序里是用 <span>$(x_i-x_j, y_i-y_j)$</span> 来描述). 作者首先将 <span>$(i, j)\in E$</span> 的相对位置用K-means聚类, 即 </p>
+<span>$$t_{ij} \in \{1, \cdots, T_{ij}\}.$$</span><br>我们能获得聚类中心<span>$\mathbf{r}^{t_{ij}}_{ij}$</span>, 再加上quadratic deformation <span>$\psi(dx, dy) = [dx, dx^2, dy, dy^2]^T$</span>, 就得到了两个part i, j之间的pairwise relational score:<br><span>$$\begin{eqnarray}
+R(l_i, l_j, t_{ij}, t_{ji} | I) &=& \langle\mathbf{w}^{t_{ij}}_{ij}, \mathbf{\psi}(l_j-l_i-r^{t_{ij}}_{ij})\rangle + w_{ij}\varphi(t_{ij}|I(l_i); \theta) \\
+&+& \langle\mathbf{w}^{t_{ji}}_{ji}, \mathbf{\psi}(l_i-l_j-r^{t_{ji}}_{ji})\rangle + w_{ji}\varphi(t_{ji}|I(l_j); \theta)
+\end{eqnarray}$$</span><br>其中<span>$\varphi(t_{ij}|I(l_i); \theta)$</span> 就是IDPR term.<br><br><h3> 如何计算Unary中的appearance term和Pairwise relation中的IDPR term</h3><br>本文的任务是, 给定一个图像块, 既要能判断它是 part $i$ 的概率, 也要在此基础上确定它与它所有的neighboring part的relationship <span>$t_{ij}$</span>. 两者都可以用同一个CNN output来计算得到.<br><br>作者用概率来formulate这个问题. 首先引入随机变量$c$, $c = 0$ 表示当前patch是negtive, <span>$c = i \in \{1, \cdots, K\}$</span> 表示当前patch是第$i$个part. 同时, 还定义了随机变量 <span>$\mathbf{m}_{c\mathbb{N}(c)}$</span>来表示$c$所属于哪个mixture type, 注意<span>$\mathbf{m}_{c\mathbb{N}(c)}$</span> 的 state space 是 <span>$\mathbb{M}_{c\mathbb{N}(c)}$</span>. 假如$c=i$ 只有一个neighbor, 那么状态空间为 <span>$\mathbb{M}_{i\mathbb{N}(i)}  = \{1, \cdots, T_{ij}\}$</span>; 若有两个neighbor $j, k$, 那么状态空间为<span>$\mathbb{M}_{i\mathbb{N}(i)}  = \{1, \cdots, T_{ij}\}\times \{1, \cdots, T_{ik}\}$</span>, 依此类推. 对Negtive而言,  <span>$\mathbb{M}_{0\mathbb{N}(0)}  = 0$</span>.<br><br>这样, 总的状态空间就是 <span>$\mathbb{S} = \cup_{c=0}^K \{c\}\times \mathbb{M}_{c\mathbb{N}(c)}$</span>, 总的状态数是 <span>$|\mathbb{S}| = \sum_{c=0}^{K} | \mathbb{M}_{c\mathbb{N}(c)}|$</span>. 在CNN中, 就变成了对local image patch 进行 <span>$|\mathbb{S}|$</span> 类分类的问题, 最后每一类的概率 <span>$p(c, \mathbf{m}_{c\mathbb{N}(c)} | I(l_i); \theta)$</span> 由softmax计算得到, 这里的<span>$\theta$</span>就是CNN的模型参数.<br><br>最后, appearance 和 IDPR 可以很简单的通过marginalization得到:<br><br><span>$$\begin{eqnarray}
+\phi(i | I(l_i)) &=& \log(p(c=i | I(l_i))) \\
+\varphi(t_{ij} | I(l_i)) &=& \log(p(m_{ij} = t_{ij} | c=i, I(l_i))).
+\end{eqnarray}$$</span>
+
+<p><strong>(这里还要仔细看下代码是怎么做marginalization的.)</strong></p>
+<h2 id="Inference">Inference</h2>
+<p>Inference就是要找到最优的part的位置和所属于的mixture, <span>$(\mathbf{l^*, t^*}) = \arg\max_{\mathbf{l, t}} F(\mathbf{l, t|I})$</span>. 由于本文pose的模型是tree structure, 可以用Dynamic programming 来求解. 有关DP的内容, 参见:</p>
+<ol>
+<li><a href="http://www.hawstein.com/posts/dp-novice-to-advanced.html" target="_blank" rel="external">动态规划：从新手到专家</a></li>
+<li>一个教程涉及了dp及backtrack : <a href="http://www.hawstein.com/posts/dp-knapsack.html" target="_blank" rel="external">http://www.hawstein.com/posts/dp-knapsack.html</a></li>
+</ol>
+<p>求解过程如下: 定义<span>$\mathbb{K}(i)$</span>表示第 i 个part的所有children, 定义 <span>$S_i(l_i | I)$</span> 表示以 i 为root的子树所能得到的maximum score, 这个score 也就是DP里面的<strong>状态</strong>, 且<strong>状态转移方程</strong>定义如下:</p>
+<span>$$S_i(l_i | I) = U(l_i | I) + \sum_{k \in \mathbb{K}(i)} \max_{l_k, t_{ik}, t_{ki}} \{R(l_i, l_k, t_{ik}, t_{ki} | I) + S_k(l_k |I)$$</span>
+
+<p>DP算法最后算在tree的root时, 能够得到最大score. 通过backtrack算法就能得到各个part对应的location和mixture type <span>$(l_i, t_{ij})$</span>.</p>
+<h3 id="快速求解_pairwise_term">快速求解 pairwise term</h3>
+<p>这里用了generalized distance transform(<a href="http://www.cs.cornell.edu/~dph/papers/pict-struct-ijcv.pdf" target="_blank" rel="external">Pictorial Structures for Object Recognition</a>), 暂时还没有去了解是什么, 不过这篇文章很经典啊.</p>
+<h2 id="Learning">Learning</h2>
+<p>根据前面的介绍, 主要有三组参数要学:</p>
+<ol>
+<li><strong>mean relative positions</strong>: <span>$r_{ij}^{t_{ij}}$</span> 是对 part i, j 的相对位置进行k-means聚类得到的聚类中心.</li>
+<li><strong>Parameters of Image Dependent Terms</strong>: 也就是<span>$\theta$</span> 其实就是CNN的参数.</li>
+<li><strong>Full score weight</strong>: 在positive image上的pose本来就有人工标注的location信息, 然后mixture type也通过聚类得到了: <span>$(I^n, l^n, t^n)$</span>. 这样就能把 image dependent terms 和 deformation features拼成长向量, 训练structure SVM.</li>
+</ol>
+<h2 id="有待研究">有待研究</h2>
+<ol>
+<li>Distance transform</li>
+<li>Structure SVM</li>
+</ol>
 
       
     </div>
