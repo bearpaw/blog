@@ -4,17 +4,23 @@
 <head>
   <meta charset="utf-8">
   
-  <title>search | Pumpkin</title>
+  <title>Git in a Nutshell | Pumpkin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Be grateful for each new day">
-<meta property="og:type" content="website">
-<meta property="og:title" content="search">
-<meta property="og:url" content="http://bearpaw.github.io/blog/blog/search/index.html">
+  <meta name="description" content="同步 fork
+一般情况下, fork得到的代码我们不要直接在master分支上进行修改, 而要在新的branch上修改, 这样就能快速保持master分支更新 (当然自己创建的分支也要常常进行更新, 否则merge会很痛苦…). 那么怎样保持 for是最新的呢?
+首先我们要指定upstream, 也就是你想从哪里获取更新 (参考: Configuring a remote for a fork)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git in a Nutshell">
+<meta property="og:url" content="http://bearpaw.github.io/blog/blog/2015/03/25/Git-in-a-Nutshell/">
 <meta property="og:site_name" content="Pumpkin">
-<meta property="og:description" content="Be grateful for each new day">
+<meta property="og:description" content="同步 fork
+一般情况下, fork得到的代码我们不要直接在master分支上进行修改, 而要在新的branch上修改, 这样就能快速保持master分支更新 (当然自己创建的分支也要常常进行更新, 否则merge会很痛苦…). 那么怎样保持 for是最新的呢?
+首先我们要指定upstream, 也就是你想从哪里获取更新 (参考: Configuring a remote for a fork)">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="search">
-<meta name="twitter:description" content="Be grateful for each new day">
+<meta name="twitter:title" content="Git in a Nutshell">
+<meta name="twitter:description" content="同步 fork
+一般情况下, fork得到的代码我们不要直接在master分支上进行修改, 而要在新的branch上修改, 这样就能快速保持master分支更新 (当然自己创建的分支也要常常进行更新, 否则merge会很痛苦…). 那么怎样保持 for是最新的呢?
+首先我们要指定upstream, 也就是你想从哪里获取更新 (参考: Configuring a remote for a fork)">
 <link rel="publisher" href="https://plus.google.com/u/0/+WeiYangplatero">
 
   
@@ -84,37 +90,114 @@
   </div>
 </header>
     <div class="outer">
-      <section id="main">
-<div  id="container" class="page">
-  <div id="st-results-container" style="width:80%">正在加载搜索结果，请稍等。</div>
-  <style>.st-result-text {
-  background: #fafafa;
-  display: block;
-  border-left: 0.5em solid #ccc;
-  -webkit-transition: border-left 0.45s;
-  -moz-transition: border-left 0.45s;
-  -o-transition: border-left 0.45s;
-  -ms-transition: border-left 0.45s;
-  transition: border-left 0.45s;
-  padding: 0.5em;
-}
-@media only screen and (min-width: 768px) {
-  .st-result-text {
-    padding: 1em;
-  }
-}
-.st-result-text:hover {
-  border-left: 0.5em solid #ea6753;
-}
-.st-result-text h3 a{
-  color: #2ca6cb;
-  line-height: 1.5;
-  font-size: 22px;
-}
-.st-snippet em {
-  font-weight: bold;
-  color: #ea6753;
-}</style>
+      <section id="main"><article id="post-Git-in-a-Nutshell" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2015/03/25/Git-in-a-Nutshell/" class="article-date">
+  <time datetime="2015-03-25T01:51:05.000Z" itemprop="datePublished">3月 25 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/工具/">工具</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Git in a Nutshell
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      	  
+		<!-- 文章目录开始 -->
+		
+			<div id="toc" class="toc-article">
+				<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#同步_fork"><span class="toc-number">1.</span> <span class="toc-text">同步 fork</span></a></li></ol>
+			</div>
+		
+		<!-- 文章目录结束 -->
+        <h2 id="同步_fork">同步 fork</h2>
+<p>一般情况下, fork得到的代码我们不要直接在master分支上进行修改, 而要在新的branch上修改, 这样就能快速保持master分支更新 (当然自己创建的分支也要常常进行更新, 否则merge会很痛苦…). 那么怎样保持 for是最新的呢?</p>
+<p>首先我们要指定upstream, 也就是你想从哪里获取更新 (参考: <a href="https://help.github.com/articles/configuring-a-remote-for-a-fork/" target="_blank" rel="external">Configuring a remote for a fork</a>).</p>
+<ol>
+<li>进入项目目录, 查看现有的upstream</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git remote -v</div><div class="line"><span class="comment"># origin  https://github.com/YOUR_USERNAME/YOUR_FORK.git (fetch)</span></div><div class="line"><span class="comment"># origin  https://github.com/YOUR_USERNAME/YOUR_FORK.git (push)</span></div></pre></td></tr></table></figure>
+
+<ol>
+<li>添加新<code>upstream</code></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git remote add upstream https://github.com/ORIGINAL_OWNER/ORIGINAL_REPOSITORY.git</div></pre></td></tr></table></figure>
+
+<ol>
+<li>确定upstream 已经添加成功</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">git remote -v</div><div class="line"><span class="comment"># origin    https://github.com/YOUR_USERNAME/YOUR_FORK.git (fetch)</span></div><div class="line"><span class="comment"># origin    https://github.com/YOUR_USERNAME/YOUR_FORK.git (push)</span></div><div class="line"><span class="comment"># upstream  https://github.com/ORIGINAL_OWNER/ORIGINAL_REPOSITORY.git (fetch)</span></div><div class="line"><span class="comment"># upstream  https://github.com/ORIGINAL_OWNER/ORIGINAL_REPOSITORY.git (push)</span></div></pre></td></tr></table></figure>
+
+<p>接下来就可以开始更新branch了(参考: <a href="https://help.github.com/articles/syncing-a-fork/" target="_blank" rel="external">Syncing a fork</a>).</p>
+<ol>
+<li>从 upstream repository中 fetch. Commits to <code>master</code> 会暂时存放在一个local brach <code>upstream/master</code>中.</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">   git fetch upstream</div><div class="line"><span class="comment"># remote: Counting objects: 75, done.</span></div><div class="line"><span class="comment"># remote: Compressing objects: 100% (53/53), done.</span></div><div class="line"><span class="comment"># remote: Total 62 (delta 27), reused 44 (delta 9)</span></div><div class="line"><span class="comment"># Unpacking objects: 100% (62/62), done.</span></div><div class="line"><span class="comment"># From https://github.com/ORIGINAL_OWNER/ORIGINAL_REPOSITORY</span></div><div class="line"><span class="comment">#  * [new branch]      master     -&gt; upstream/master</span></div></pre></td></tr></table></figure>
+
+<ol>
+<li>切换到<code>master</code> branch</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git checkout master</div><div class="line"><span class="comment"># Switched to branch 'master'</span></div></pre></td></tr></table></figure>
+
+<p>   Tips: 可以用<code>git branch</code> 查看现在正处于哪个分支.</p>
+<ol>
+<li>从<code>upstream/master</code>合并分支到 <code>master</code>. 如果没什么冲突, 那么就可以做到”fast-forward”:</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">git merge upstream/master</div><div class="line"> <span class="comment"># Updating a422352..5fdff0f</span></div><div class="line"> <span class="comment"># Fast-forward</span></div><div class="line"> <span class="comment">#  README                    |    9 -------</span></div><div class="line"> <span class="comment">#  README.md                 |    7 ++++++</span></div><div class="line"> <span class="comment">#  2 files changed, 7 insertions(+), 9 deletions(-)</span></div><div class="line"> <span class="comment">#  delete mode 100644 README</span></div><div class="line"> <span class="comment">#  create mode 100644 README.md</span></div></pre></td></tr></table></figure>
+
+<ol>
+<li>如果有冲突的话, 需要手动处理.</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://bearpaw.github.io/blog/2015/03/25/Git-in-a-Nutshell/" data-id="2owkxzwnphpb0tua" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://bearpaw.github.io/blog/2015/03/25/Git-in-a-Nutshell/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/git/">git</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/blog/2015/03/19/Articulated-Pose-Estimation-by-a-Graphical-Model-with-Image-Dependent-Pairwise-Relations/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Articulated Pose Estimation by a Graphical Model with Image Dependent Pairwise Relations</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2015/03/25/Git-in-a-Nutshell/" data-title="Git in a Nutshell" data-url="http://bearpaw.github.io/blog/2015/03/25/Git-in-a-Nutshell/"></div>
+  </section>
 </section>
       
       <aside id="sidebar">

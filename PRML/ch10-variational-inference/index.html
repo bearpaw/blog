@@ -1,20 +1,33 @@
 
+
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   
-  <title>search | Pumpkin</title>
+  <title>Pumpkin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Be grateful for each new day">
+  <meta name="description" content="Chapter 10: Approximate Inference
+
+关键词: posterior distribution
+概率模型中, 估计隐变量的后验概率 $p(Z|X)$ 是很核心的一个任务. 在此基础上, 往往还需要估计在  $p(Z|X)$ 下的期望 $E_{Z|X}(\cdot)$.  上一章讨论的EM算法就是很好的例子.
+然而在很多情况下, 或者 $p(Z|X)$ 无法解析计算,">
 <meta property="og:type" content="website">
-<meta property="og:title" content="search">
-<meta property="og:url" content="http://bearpaw.github.io/blog/blog/search/index.html">
+<meta property="og:title" content="Pumpkin">
+<meta property="og:url" content="http://bearpaw.github.io/blog/blog/PRML/ch10-variational-inference/index.html">
 <meta property="og:site_name" content="Pumpkin">
-<meta property="og:description" content="Be grateful for each new day">
+<meta property="og:description" content="Chapter 10: Approximate Inference
+
+关键词: posterior distribution
+概率模型中, 估计隐变量的后验概率 $p(Z|X)$ 是很核心的一个任务. 在此基础上, 往往还需要估计在  $p(Z|X)$ 下的期望 $E_{Z|X}(\cdot)$.  上一章讨论的EM算法就是很好的例子.
+然而在很多情况下, 或者 $p(Z|X)$ 无法解析计算,">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="search">
-<meta name="twitter:description" content="Be grateful for each new day">
+<meta name="twitter:title" content="Pumpkin">
+<meta name="twitter:description" content="Chapter 10: Approximate Inference
+
+关键词: posterior distribution
+概率模型中, 估计隐变量的后验概率 $p(Z|X)$ 是很核心的一个任务. 在此基础上, 往往还需要估计在  $p(Z|X)$ 下的期望 $E_{Z|X}(\cdot)$.  上一章讨论的EM算法就是很好的例子.
+然而在很多情况下, 或者 $p(Z|X)$ 无法解析计算,">
 <link rel="publisher" href="https://plus.google.com/u/0/+WeiYangplatero">
 
   
@@ -84,37 +97,63 @@
   </div>
 </header>
     <div class="outer">
-      <section id="main">
-<div  id="container" class="page">
-  <div id="st-results-container" style="width:80%">正在加载搜索结果，请稍等。</div>
-  <style>.st-result-text {
-  background: #fafafa;
-  display: block;
-  border-left: 0.5em solid #ccc;
-  -webkit-transition: border-left 0.45s;
-  -moz-transition: border-left 0.45s;
-  -o-transition: border-left 0.45s;
-  -ms-transition: border-left 0.45s;
-  transition: border-left 0.45s;
-  padding: 0.5em;
-}
-@media only screen and (min-width: 768px) {
-  .st-result-text {
-    padding: 1em;
-  }
-}
-.st-result-text:hover {
-  border-left: 0.5em solid #ea6753;
-}
-.st-result-text h3 a{
-  color: #2ca6cb;
-  line-height: 1.5;
-  font-size: 22px;
-}
-.st-snippet em {
-  font-weight: bold;
-  color: #ea6753;
-}</style>
+      <section id="main"><article id="page-undefined" class="article article-type-page" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/PRML/ch10-variational-inference/index.html" class="article-date">
+  <time datetime="2015-03-24T03:36:03.000Z" itemprop="datePublished">3月 24 2015</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      	  
+		<!-- 文章目录开始 -->
+		
+			<div id="toc" class="toc-article">
+				<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Chapter_10:_Approximate_Inference"><span class="toc-number">1.</span> <span class="toc-text">Chapter 10: Approximate Inference</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Variational_Inference"><span class="toc-number">2.</span> <span class="toc-text">Variational Inference</span></a></li></ol>
+			</div>
+		
+		<!-- 文章目录结束 -->
+        <h1 id="Chapter_10:_Approximate_Inference">Chapter 10: Approximate Inference</h1>
+<hr>
+<p>关键词: posterior distribution</p>
+<p>概率模型中, 估计隐变量的后验概率 $p(Z|X)$ 是很核心的一个任务. 在此基础上, 往往还需要估计在  $p(Z|X)$ 下的期望 $E_{Z|X}(\cdot)$.  上一章讨论的<a href="/blog/PRML/ch9-EM">EM算法</a>就是很好的例子.</p>
+<p>然而在很多情况下, 或者 $p(Z|X)$ 无法解析计算, 或者  $E_{Z|X}(\cdot)$ 无法解析计算, 这时我们就需要一种近似估计的方法:</p>
+<ol>
+<li>Stochastic approximation: 主要指以MCMC为主的采样方法</li>
+<li><strong>Deterministic approximation</strong>: 这是本章讨论的主题 (主要讨论 variational inference). 这一类方法的核心问题是求解后验概率的近似.</li>
+</ol>
+<p>(本章主要讨论连续随机变量,因此主要用积分而不是求和.)</p>
+<h1 id="Variational_Inference">Variational Inference</h1>
+<p><strong>引子</strong>: 假设 $X$ 是观察到的变量, $Z$ 是隐变量. 我们的<strong>概率模型</strong>表达了联合概率 $p(X, Z)$, 我们的<strong>目标</strong>是求解后验概率 $p(Z|X)$ 和 model evidence $p(X)$. 为什么我们的目标是 “后验概率和evidence”? 其实很容易理解. 回顾EM算法, 我们要最大化incomplete-data log likelihood, 其实就是在最大化这里所说的 model evidence $p(X)$. 而在EM算法的分析中, 我们已经证明通过计算  $p(Z|X)$ 和基于后验概率的complete-data log likelihood的期望, 就一定会使 $p(X)$ 在每一轮的迭代中变大.</p>
+<p>不过在实际问题中, 真实的后验概率可能是intractable, 原因很多, 比如 $Z$ 的维度过高等等. 在EM框架下, 我们就退而求其次, 找一组次优的后验替代品: $q(Z)$. 然后在这些次优后验中, 找一个能最小化KL距离的作为真实后验的近似. 一种常见的方式是用带参数的分布 $p(Z|w)$ 作为近似, 那么下界 $L(q)$ 就变成了 $w$ 的函数. 不过本章主要讨论另一种近似方法.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://bearpaw.github.io/blog/PRML/ch10-variational-inference/index.html" data-id="vhdtaqce348qfh50" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://bearpaw.github.io/blog/PRML/ch10-variational-inference/index.html#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="PRML/ch10-variational-inference/index.html" data-title="" data-url="http://bearpaw.github.io/blog/PRML/ch10-variational-inference/index.html"></div>
+  </section>
 </section>
       
       <aside id="sidebar">
@@ -347,3 +386,4 @@ MathJax.Hub.Queue(function() {
 </script>
 </body>
 </html>
+

@@ -5,17 +5,43 @@
 <head>
   <meta charset="utf-8">
   
-  <title>PRML | Pumpkin</title>
+  <title>Pumpkin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="测试以下">
+  <meta name="description" content="Chapter 9: Mixture Model and EM
+
+一句话概括EM:
+
+The goal of EM is to find maximum likelihood solutions for models having latent variables.
+
+关键词: maximum likelihood, latent variables.
+引子: Gaussian Mixture M">
 <meta property="og:type" content="website">
-<meta property="og:title" content="PRML">
+<meta property="og:title" content="Pumpkin">
 <meta property="og:url" content="http://bearpaw.github.io/blog/blog/PRML/ch9-EM/index.html">
 <meta property="og:site_name" content="Pumpkin">
-<meta property="og:description" content="测试以下">
+<meta property="og:description" content="Chapter 9: Mixture Model and EM
+
+一句话概括EM:
+
+The goal of EM is to find maximum likelihood solutions for models having latent variables.
+
+关键词: maximum likelihood, latent variables.
+引子: Gaussian Mixture M">
+<meta property="og:image" content="http://research.microsoft.com/en-us/um/people/cmbishop/prml/prmlfigs-png/Figure9.4.png">
+<meta property="og:image" content="http://research.microsoft.com/en-us/um/people/cmbishop/prml/prmlfigs-png/Figure9.11.png">
+<meta property="og:image" content="http://research.microsoft.com/en-us/um/people/cmbishop/prml/prmlfigs-png/Figure9.12.png">
+<meta property="og:image" content="http://research.microsoft.com/en-us/um/people/cmbishop/prml/prmlfigs-png/Figure9.13.png">
+<meta property="og:image" content="http://research.microsoft.com/en-us/um/people/cmbishop/prml/prmlfigs-png/Figure9.14.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="PRML">
-<meta name="twitter:description" content="测试以下">
+<meta name="twitter:title" content="Pumpkin">
+<meta name="twitter:description" content="Chapter 9: Mixture Model and EM
+
+一句话概括EM:
+
+The goal of EM is to find maximum likelihood solutions for models having latent variables.
+
+关键词: maximum likelihood, latent variables.
+引子: Gaussian Mixture M">
 <link rel="publisher" href="https://plus.google.com/u/0/+WeiYangplatero">
 
   
@@ -88,22 +114,12 @@
       <section id="main"><article id="page-undefined" class="article article-type-page" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blog/PRML/ch9-EM/index.html" class="article-date">
-  <time datetime="2015-02-04T15:29:06.000Z" itemprop="datePublished">2月 4 2015</time>
+  <time datetime="2015-03-23T16:14:15.000Z" itemprop="datePublished">3月 24 2015</time>
 </a>
     
   </div>
   <div class="article-inner">
     
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      PRML
-    </h1>
-  
-
-      </header>
     
     <div class="article-entry" itemprop="articleBody">
       	  
@@ -111,17 +127,88 @@
 		
 			<div id="toc" class="toc-article">
 				<strong class="toc-title">文章目录</strong>
-			
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Chapter_9:_Mixture_Model_and_EM"><span class="toc-number">1.</span> <span class="toc-text">Chapter 9: Mixture Model and EM</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引子:_Gaussian_Mixture_Model"><span class="toc-number">1.1.</span> <span class="toc-text">引子: Gaussian Mixture Model</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#EM_for_GMM"><span class="toc-number">1.1.1.</span> <span class="toc-text">EM for GMM</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#另一个角度看EM"><span class="toc-number">1.2.</span> <span class="toc-text">另一个角度看EM</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#从General_EM的角度理解GMM"><span class="toc-number">1.2.1.</span> <span class="toc-text">从General EM的角度理解GMM</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对EM算法的进一步分析"><span class="toc-number">1.3.</span> <span class="toc-text">对EM算法的进一步分析</span></a></li></ol></li></ol>
 			</div>
 		
 		<!-- 文章目录结束 -->
-        <p>测试以下</p>
+        <h1 id="Chapter_9:_Mixture_Model_and_EM">Chapter 9: Mixture Model and EM</h1>
+<hr>
+<p>一句话概括EM:</p>
+<blockquote>
+<p>The goal of EM is to find <strong>maximum likelihood solutions</strong> for models having <strong>latent variables</strong>.</p>
+</blockquote>
+<p>关键词: maximum likelihood, latent variables.</p>
+<h2 id="引子:_Gaussian_Mixture_Model">引子: Gaussian Mixture Model</h2>
+<p>本章主要介绍了Mixture Model和EM算法. K-means和GMM都可以看成mixture model. 我们从GMM入手, 如果不考虑latent ariable, 那么GMM可以看成多个Gaussian的加权叠加:</p>
+<span>$$p(x) = \sum_{k=1}^K \pi_k N(x | \mu_k, \sigma_k), $$</span>
+
+<p>假设现在有N个iid的训练样本$X$, 我们要通过最大似然的方法求模型参数, log likelihood写出来就是下面这样:</p>
+<p><span>$$\ln p(X| \pi, \mu, \sigma) = \sum_{n=1}^N \ln p(x_n | \pi, \mu, \sigma) = \sum_{n=1}^N \ln \sum_{k=1}^K \pi_k N(x_n | \mu_k, \sigma_k),$$</span><br>在log函数里面还有一个求和, 因此要对这个函数进行优化(比如求导)是非常困难的. </p>
+<h3 id="EM_for_GMM">EM for GMM</h3>
+<p>为了简化上面的ML问题, 引入隐变量$z$, 其中$z$的维度与$x$一样. 我们需要让 $p(x) = \sum_z p(x|z)p(z)$ 与上面的GMM等价, 因此需要定义 $p(z)$ 和 $p(x|z)$. 用图模型表示如下:<br><img src="http://research.microsoft.com/en-us/um/people/cmbishop/prml/prmlfigs-png/Figure9.4.png" width="50" alt="含latent variable 的 mixture model: $p(x, z)=p(x|z)p(x) $"></p>
+<p>这里$z$中只有一个元素为1, 其他元素都为0. 这样可以定义</p>
+<p><span>$$\begin{eqnarray}
+p(z) &=& \prod_{k=1}^K \pi_k^{z_k}, \\
+p(x|z)&=& \prod_{k=1}^K N(x|\mu_k, \sigma_k)^{z_k}.
+\end{eqnarray}$$</span><br>这样就有</p>
+<p><span>$$\begin{eqnarray}
+p(x) = \sum_z p(z)p(x|z) = \sum_z \prod_{k=1}^K \pi_k^{z_k} N(x|\mu_k, \sigma_k)^{z_k} = \sum_{k=1}^K \pi_k N(x | \mu_k, \sigma_k).
+\end{eqnarray}$$</span><br>刚好就是GMM模型.</p>
+<p><strong>Maximum Likelihood</strong>: ** 为了最大log似然函数, 我们可以分别对模型参数求偏导, 并设置偏导为0, 以求得能最大化似然的参数. 根据书中的推导, 会发现每一个最优参数是没有closed-form解的, 但是会发现每一个参数中都会有一个factor刚好是隐变量的后验概率 $p(z | x)$, 因此很自然地就能联想到通过两步迭代来求解ML solution:</p>
+<ol>
+<li>固定住参数, 求解隐变量的后验概率 $p(z|x)$</li>
+<li>根据上一步求出的$p(z|x)$, 更新模型参数</li>
+</ol>
+<p>这两步就是传说中的 (Fix parameters to get) <strong>Expectation</strong>-(Use expectation to get the current optimal solution for ) <strong>Maximization</strong>.</p>
+<h2 id="另一个角度看EM">另一个角度看EM</h2>
+<p>考虑一个很General的模型 <span>$p(X|\theta)$</span>,其中</p>
+<ol>
+<li>$X$ 是观察到的数据 (NxD维)</li>
+<li><span>$\theta$</span>是模型参数</li>
+</ol>
+<p>引入隐变量 $Z$ (NxD维), 那么有 <span>$p(X|\theta) = \sum_Z p(X, Z|\theta)$</span> (marginalization). 显然似然函数就定义为:</p>
+<p><span>$$\ln p(X|\theta) = \ln \sum_Z p(X, Z|\theta).$$</span><br>这个似然函数之所以不好最大化, 是因为sum在log里面, 而不是外面, 这一点在GMM中也可以看到.</p>
+<p>既然直接求<span>$\ln p(X|\theta)$</span>不好求, 那我们再来简化问题: 假设$Z$也是已知的呢? 这样就没有marginalization了, 直接求<span>$\ln \sum_Z p(X, Z|\theta)$</span>, 然后一般我们又会把 <span>$p(X, Z|\theta)$</span>设计成exponential family, 配合log函数一下子就变得可以求解了!</p>
+<p>书中把<span>$\{X, Z\}$</span>都知道的数据叫做complete data, 而真实的数据是incomplete data. 关于$Z$我们知道得仅仅只有它的posterior. 为了简化问题, 只能考虑<strong>在$Z$的后验概率下, complete-data log likelihood的期望</strong>了 (毕竟这个还是可以求的):</p>
+<p><span>$$Q(\theta, \theta^{old}) = \sum_Z p(Z|X, \theta^{old}) p(X, Z|\theta).$$</span><br>这样, 就得到了general EM算法:</p>
+<ol>
+<li>固定住参数, 求在$Z$的后验概率下, complete-data log likelihood的期望 <span>$Q(\theta, \theta^{old})$</span>;</li>
+<li>更新模型参数, 更新准则是能够最大化这个期望 <span>$\theta^{new} = \arg\max_{\theta} Q(\theta, \theta^{old})$</span>.</li>
+</ol>
+<p>整个算法流程图如下所示:</p>
+<p>到目前为止, 最大的疑问有如下几点:</p>
+<ol>
+<li>为什么选则在$Z$后验概率下的期望? 有没有其他选择? (后面会讨论)</li>
+<li>EM真的能最大化似然吗? (后面会证明, 每次迭代EM都能增加incomplete-data log likelihood, 也就是真实数据的likelihood, 因此是有效的)</li>
+</ol>
+<h3 id="从General_EM的角度理解GMM">从General EM的角度理解GMM</h3>
+<p>前面关于GMM最大似然估计参数的推导不是从EM的角度推出来的. 如General EM中所述, incomplete-data log likelihood中sum在log里面, 很难求解, 这直接体现在笔记 “引子”中的incomplete-data log likelihood中 (虽然当时我们还没有incomplete-data的概念).</p>
+<p>假如$Z$已知, 我们有</p>
+<p><span>$$p(X, Z| \mu, \sigma, \pi) = \prod_{n=1}^N \prod_{k=1}^K \pi_k^{z_{nk}} N(x_n | \mu_k, \sigma_k)^{z_{nk}}$$</span><br>于是complete-data log likelihood 为:</p>
+<p><span>$$\ln p(X, Z| \mu, \sigma, \pi) = \sum_{n=1}^N \sum_{k=1}^K \{ z_{nk} (\ln \pi_k) + \ln N(x_n | \mu_k, \sigma_k) \}$$</span><br>这样log里面没有sum了, 而是指数分布的高斯, 这样问题变简单了!</p>
+<p>然后套用General EM中所述的算法流程, 会发现参数更新公式和前面推出的一样. </p>
+<h2 id="对EM算法的进一步分析">对EM算法的进一步分析</h2>
+<p>首先, 似然可以分解为:</p>
+<p><span>$$\ln p(X | \theta) = L(q, \theta) + KL(q||p),$$</span><br>其中</p>
+<p><span>$$\begin{eqnarray}
+L(q, \theta) &=& \sum_Z q(z)\ln \left(\frac{p(X, Z|\theta)}{q(Z)}\right) \\
+KL(q|| p) &=&  -\sum_Z q(z)\ln \left(\frac{p(Z|X, \theta)}{q(Z)}\right)
+\end{eqnarray}$$</span><br>从右边往左边推很容易验证上式的分解是正确的. 另外值得注意的是第二项是KL距离, 是非负的. $KL(q|| p) =0$ 当且仅当 $p=q$, 因此一定有<span>$L(q, \theta) \leq \ln p(X | \theta)$</span>, 即<span>$L(q, \theta)$</span>是log likelihood的一个下界! 这个分解可以由下图表示.</p>
+<p><img src="http://research.microsoft.com/en-us/um/people/cmbishop/prml/prmlfigs-png/Figure9.11.png" width="400" alt="log likelihood 分解示意图"></p>
+<p><strong>E-step</strong>: 固定模型参数<span>$\theta^{old}$</span>, 最大化下界$L$. 注意log likelihood与$Z$无关, 所以固定了参数<span>$\theta$</span>,  likelihood就是固定的. 这样当KL距离为0时, 下界最大, 且刚好与此时的似然一样大. 儿KL=0时有</p>
+<p><span>$$q(Z) = p(Z|X, \theta).$$</span><br>这就解释了为什么在前面的讨论中, E-step都是固定模型参数, 求隐变量的后验概率. 整个过程如下图所示.</p>
+<p><img src="http://research.microsoft.com/en-us/um/people/cmbishop/prml/prmlfigs-png/Figure9.12.png" width="400" alt="E-Step: 固定参数, 最大化下界 => 估计隐变量Z的后验概率."></p>
+<p><strong>M-step</strong>: 固定$q(Z)$, 求解能最大化下界的模型参数. 这样有</p>
+<p><span>$$q(Z) = p(Z|X, \theta^{old}) \neq p(Z|X, \theta^{new}).$$</span><br>因此KL距离也不在等于0, 总之似然也继续增长. 如下图所示.</p>
+<p><img src="http://research.microsoft.com/en-us/um/people/cmbishop/prml/prmlfigs-png/Figure9.13.png" width="400" alt="M-Step: 固定隐变量Z的后验概率, 求解能最大化下界的模型参数."></p>
+<p>我们也可以从参数变化的角度来分析EM算法. 如下图所示, 红线表示目标likelihood, 从<span>$\theta^{old}$</span>开始, 在E-step估计隐变量的后验概率, 使得KL距离为0, 这样下界L就与似然相等. 接着在M步, 我们更新<span>$\theta^{old}$</span>为能最大化当前下界的参数 (注意蓝线在这个新的参数下取得最大值), 此时似然也相应变大. 然后在下一个E-step, 我们继续估计后验概率, 使得下界L增大 (绿色线).</p>
+<p><img src="http://research.microsoft.com/en-us/um/people/cmbishop/prml/prmlfigs-png/Figure9.14.png" width="400" alt="似然/下界随参数变化图"><br><strong>EM for MAP: (见课本pp.454讨论)</strong></p>
 
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/PRML/ch9-EM/index.html" data-id="odydcmenbnmkgjki" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/PRML/ch9-EM/index.html" data-id="5dun5blliz2e5va7" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -138,7 +225,7 @@
 
 
   <section id="comments">
-    <div id="ds-thread" class="ds-thread" data-thread-key="PRML/ch9-EM/index.html" data-title="PRML" data-url="http://bearpaw.github.io/blog/PRML/ch9-EM/index.html"></div>
+    <div id="ds-thread" class="ds-thread" data-thread-key="PRML/ch9-EM/index.html" data-title="" data-url="http://bearpaw.github.io/blog/PRML/ch9-EM/index.html"></div>
   </section>
 </section>
       
@@ -148,7 +235,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/工具/">工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/知识库/">知识库</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">3</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/知识库/">知识库</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -157,7 +244,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Caffe/">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deep-Learning/">Deep Learning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/classification/">classification</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/linear-regression/">linear regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/newton-method/">newton method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/optimization/">optimization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pose-estimation/">pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Caffe/">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deep-Learning/">Deep Learning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/classification/">classification</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/linear-regression/">linear regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/newton-method/">newton method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/optimization/">optimization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pose-estimation/">pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -166,7 +253,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/blog/tags/Caffe/" style="font-size: 10.00px;">Caffe</a><a href="/blog/tags/DPM/" style="font-size: 10.00px;">DPM</a><a href="/blog/tags/Deep-Learning/" style="font-size: 10.00px;">Deep Learning</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/Logistic-regression/" style="font-size: 10.00px;">Logistic regression</a><a href="/blog/tags/MCMC/" style="font-size: 10.00px;">MCMC</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 10.00px;">articulated pose estimation</a><a href="/blog/tags/classification/" style="font-size: 10.00px;">classification</a><a href="/blog/tags/feature/" style="font-size: 10.00px;">feature</a><a href="/blog/tags/gradient-descent/" style="font-size: 20.00px;">gradient descent</a><a href="/blog/tags/hinge-loss/" style="font-size: 10.00px;">hinge loss</a><a href="/blog/tags/human-detection/" style="font-size: 10.00px;">human detection</a><a href="/blog/tags/linear-regression/" style="font-size: 10.00px;">linear regression</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 10.00px;">mixtures of parts</a><a href="/blog/tags/newton-method/" style="font-size: 10.00px;">newton method</a><a href="/blog/tags/optimization/" style="font-size: 10.00px;">optimization</a><a href="/blog/tags/pictorial-model/" style="font-size: 10.00px;">pictorial model</a><a href="/blog/tags/pose-estimation/" style="font-size: 10.00px;">pose estimation</a><a href="/blog/tags/sampling/" style="font-size: 10.00px;">sampling</a>
+      <a href="/blog/tags/Caffe/" style="font-size: 10.00px;">Caffe</a><a href="/blog/tags/DPM/" style="font-size: 10.00px;">DPM</a><a href="/blog/tags/Deep-Learning/" style="font-size: 10.00px;">Deep Learning</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/Logistic-regression/" style="font-size: 10.00px;">Logistic regression</a><a href="/blog/tags/MCMC/" style="font-size: 10.00px;">MCMC</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 10.00px;">articulated pose estimation</a><a href="/blog/tags/classification/" style="font-size: 10.00px;">classification</a><a href="/blog/tags/feature/" style="font-size: 10.00px;">feature</a><a href="/blog/tags/git/" style="font-size: 10.00px;">git</a><a href="/blog/tags/gradient-descent/" style="font-size: 20.00px;">gradient descent</a><a href="/blog/tags/hinge-loss/" style="font-size: 10.00px;">hinge loss</a><a href="/blog/tags/human-detection/" style="font-size: 10.00px;">human detection</a><a href="/blog/tags/linear-regression/" style="font-size: 10.00px;">linear regression</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 10.00px;">mixtures of parts</a><a href="/blog/tags/newton-method/" style="font-size: 10.00px;">newton method</a><a href="/blog/tags/optimization/" style="font-size: 10.00px;">optimization</a><a href="/blog/tags/pictorial-model/" style="font-size: 10.00px;">pictorial model</a><a href="/blog/tags/pose-estimation/" style="font-size: 10.00px;">pose estimation</a><a href="/blog/tags/sampling/" style="font-size: 10.00px;">sampling</a>
     </div>
   </div>
 
@@ -175,7 +262,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/03/">March 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/02/">February 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">4</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/03/">March 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/02/">February 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -185,6 +272,10 @@
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/blog/2015/03/25/Git-in-a-Nutshell/">Git in a Nutshell</a>
+          </li>
         
           <li>
             <a href="/blog/2015/03/19/Articulated-Pose-Estimation-by-a-Graphical-Model-with-Image-Dependent-Pairwise-Relations/">Articulated Pose Estimation by a Graphical Model with Image Dependent Pairwise Relations</a>
@@ -200,10 +291,6 @@
         
           <li>
             <a href="/blog/2015/02/05/hinge-loss/">Hinge Loss</a>
-          </li>
-        
-          <li>
-            <a href="/blog/2015/01/29/Network/">Caffe 将全连接网络转化为全卷积网络</a>
           </li>
         
       </ul>
