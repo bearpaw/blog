@@ -6,21 +6,15 @@
   
   <title>Git in a Nutshell | Pumpkin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="同步 fork
-一般情况下, fork得到的代码我们不要直接在master分支上进行修改, 而要在新的branch上修改, 这样就能快速保持master分支更新 (当然自己创建的分支也要常常进行更新, 否则merge会很痛苦…). 那么怎样保持 for是最新的呢?
-首先我们要指定upstream, 也就是你想从哪里获取更新 (参考: Configuring a remote for a fork)">
+  <meta name="description" content="本文主要介绍git常用操作, 包括同步fork, 解决merge 冲突等等.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Git in a Nutshell">
 <meta property="og:url" content="http://bearpaw.github.io/blog/blog/2015/03/25/Git-in-a-Nutshell/">
 <meta property="og:site_name" content="Pumpkin">
-<meta property="og:description" content="同步 fork
-一般情况下, fork得到的代码我们不要直接在master分支上进行修改, 而要在新的branch上修改, 这样就能快速保持master分支更新 (当然自己创建的分支也要常常进行更新, 否则merge会很痛苦…). 那么怎样保持 for是最新的呢?
-首先我们要指定upstream, 也就是你想从哪里获取更新 (参考: Configuring a remote for a fork)">
+<meta property="og:description" content="本文主要介绍git常用操作, 包括同步fork, 解决merge 冲突等等.">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git in a Nutshell">
-<meta name="twitter:description" content="同步 fork
-一般情况下, fork得到的代码我们不要直接在master分支上进行修改, 而要在新的branch上修改, 这样就能快速保持master分支更新 (当然自己创建的分支也要常常进行更新, 否则merge会很痛苦…). 那么怎样保持 for是最新的呢?
-首先我们要指定upstream, 也就是你想从哪里获取更新 (参考: Configuring a remote for a fork)">
+<meta name="twitter:description" content="本文主要介绍git常用操作, 包括同步fork, 解决merge 冲突等等.">
 <link rel="publisher" href="https://plus.google.com/u/0/+WeiYangplatero">
 
   
@@ -66,6 +60,8 @@
           <a class="main-nav-link" href="/blog/">Blog</a>
         
           <a class="main-nav-link" href="/blog/PRML">PRML</a>
+        
+          <a class="main-nav-link" href="/blog/Deep-Learning">Deep Learning</a>
         
           <a class="main-nav-link" href="/blog/archives">Archives</a>
         
@@ -120,11 +116,28 @@
 		
 			<div id="toc" class="toc-article">
 				<strong class="toc-title">文章目录</strong>
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#同步_fork"><span class="toc-number">1.</span> <span class="toc-text">同步 fork</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#分支操作"><span class="toc-number">1.</span> <span class="toc-text">分支操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步_fork"><span class="toc-number">2.</span> <span class="toc-text">同步 fork</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决_merge_conflicts"><span class="toc-number">3.</span> <span class="toc-text">解决 merge conflicts</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#编辑冲突"><span class="toc-number">3.1.</span> <span class="toc-text">编辑冲突</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件删除冲突"><span class="toc-number">3.2.</span> <span class="toc-text">文件删除冲突</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#保留文件"><span class="toc-number">3.2.1.</span> <span class="toc-text">保留文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#删除文件"><span class="toc-number">3.2.2.</span> <span class="toc-text">删除文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#提交"><span class="toc-number">3.2.3.</span> <span class="toc-text">提交</span></a></li></ol></li></ol></li></ol>
 			</div>
 		
 		<!-- 文章目录结束 -->
-        <h2 id="同步_fork">同步 fork</h2>
+        <p>本文主要介绍git常用操作, 包括同步fork, 解决merge 冲突等等.</p>
+<p><a id="more"></a></p>
+<h2 id="分支操作">分支操作</h2>
+<p>参考:</p>
+<ol>
+<li><a href="http://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging" target="_blank" rel="external">Git Branching - Basic Branching and Merging</a></li>
+<li><a href="https://github.com/Kunena/Kunena-Forum/wiki/Create-a-new-branch-with-git-and-manage-branches" target="_blank" rel="external">Create a new branch with git and manage branches</a></li>
+</ol>
+<p>创建新分支</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git checkout -b newbranch</div><div class="line"><span class="comment"># Switched to a new branch "newbranch"</span></div></pre></td></tr></table></figure>
+
+<p>切换分支</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git checkout oldbranch</div><div class="line"><span class="comment"># Switched to branch 'oldbranch'</span></div></pre></td></tr></table></figure>
+
+<p>删除分支</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git branch <span class="operator">-d</span> oldbranch</div><div class="line"><span class="comment"># Deleted branch oldbranch (3a0874c).</span></div></pre></td></tr></table></figure>
+
+<h2 id="同步_fork">同步 fork</h2>
 <p>一般情况下, fork得到的代码我们不要直接在master分支上进行修改, 而要在新的branch上修改, 这样就能快速保持master分支更新 (当然自己创建的分支也要常常进行更新, 否则merge会很痛苦…). 那么怎样保持 for是最新的呢?</p>
 <p>首先我们要指定upstream, 也就是你想从哪里获取更新 (参考: <a href="https://help.github.com/articles/configuring-a-remote-for-a-fork/" target="_blank" rel="external">Configuring a remote for a fork</a>).</p>
 <ol>
@@ -162,6 +175,32 @@
 <ol>
 <li>如果有冲突的话, 需要手动处理.</li>
 </ol>
+<h2 id="解决_merge_conflicts">解决 merge conflicts</h2>
+<p>参考: <a href="https://help.github.com/articles/resolving-a-merge-conflict-from-the-command-line/" target="_blank" rel="external">Resolving a merge conflict from the command line</a></p>
+<h3 id="编辑冲突">编辑冲突</h3>
+<p>如果待合并的两个branch更改了某一个文件的同一个部分, 就会产生这种冲突. 首先我们用 <code>git status</code> 来定位冲突</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">git status</div><div class="line"><span class="comment"># # On branch branch-b</span></div><div class="line"><span class="comment"># # You have unmerged paths.</span></div><div class="line"><span class="comment"># #   (fix conflicts and run "git commit")</span></div><div class="line"><span class="comment"># #</span></div><div class="line"><span class="comment"># # Unmerged paths:</span></div><div class="line"><span class="comment"># #   (use "git add ..." to mark resolution)</span></div><div class="line"><span class="comment"># #</span></div><div class="line"><span class="comment"># # both modified:      planets.md</span></div><div class="line"><span class="comment"># #</span></div><div class="line"><span class="comment"># no changes added to commit (use "git add" and/or "git commit -a")</span></div></pre></td></tr></table></figure>
+
+<p>可以看到是<code>planets.md</code>有冲突, 用文本编辑器打开该文件, 会看到git自动给你添加了几行:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">the number of planets are</div><div class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</div><div class="line"><span class="header">nine</span></div><div class="line">=======</div><div class="line">eight</div><div class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; branch-a</div></pre></td></tr></table></figure>
+
+<p>其中<code>===</code>上面部分是你本地branch的内容, 下面部分是target branch的内容. 你需要修改这一部分内容, 然后删除冲突标记. 然后正常执行git <code>add</code>, <code>commit</code>, <code>push</code> 把 merge 过的结果提交到远程 repository.</p>
+<h3 id="文件删除冲突">文件删除冲突</h3>
+<p>如果某文件在一个branch中存在, 但是在另一个 branch中被删除, 就会产生这种冲突. 你可以选择保留文件, 或者删除文件.</p>
+<h4 id="保留文件">保留文件</h4>
+<p>加入你自己的分支是 <code>branch-a</code>, 你有一个文件 <code>README.md</code>, 但是这个文件在你朋友的 <code>branch-c</code>中被删除了, 而此时你正在从 <code>branch-c</code> 合并到 <code>branch-a</code>, 用 <code>git status</code> 可以看到下列冲突:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">CONFLICT (modify/delete): README.md deleted <span class="keyword">in</span> HEAD and modified <span class="keyword">in</span> branch-b. Version branch-b of README.md left <span class="keyword">in</span> tree.</div><div class="line"><span class="comment"># Automatic merge failed; fix conflicts and then commit the result.</span></div><div class="line"></div><div class="line">git status</div><div class="line"><span class="comment"># # On branch branch-c</span></div><div class="line"><span class="comment"># # You have unmerged paths.</span></div><div class="line"><span class="comment"># #   (fix conflicts and run "git commit")</span></div><div class="line"><span class="comment"># #</span></div><div class="line"><span class="comment"># # Unmerged paths:</span></div><div class="line"><span class="comment"># #   (use "git add/rm ..." as appropriate to mark resolution)</span></div><div class="line"><span class="comment"># #</span></div><div class="line"><span class="comment"># # deleted by us:      README.md</span></div><div class="line"><span class="comment"># #</span></div><div class="line"><span class="comment"># no changes added to commit (use "git add" and/or "git commit -a")</span></div></pre></td></tr></table></figure>
+
+<p>如果你想保留这个文件, 你可以用<code>add</code>把它重新加回来:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git add README.md</div></pre></td></tr></table></figure>
+
+<h4 id="删除文件">删除文件</h4>
+<p>当然, 你也可以选择删除文件. 你可以用 <code>git rm</code> 来解决冲突</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git rm README.md</div><div class="line"><span class="comment"># README.md: needs merge</span></div><div class="line"><span class="comment"># rm 'README.md'</span></div></pre></td></tr></table></figure>
+
+<h4 id="提交">提交</h4>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">git commit</div><div class="line"><span class="comment"># [branch-d 6f89e49] Merge branch 'branch-c' into branch-d</span></div><div class="line"></div><div class="line">git show | head</div><div class="line"><span class="comment"># commit 6f89e49189ba3a2b7440fc434f351cb041b3999e</span></div><div class="line"><span class="comment"># Merge: 211261b fcc1093</span></div><div class="line"><span class="comment"># Author: tekkub :bear:  </span></div><div class="line"><span class="comment"># Date:   Sat Jun 1 18:43:01 2013 -0700</span></div><div class="line"></div><div class="line"><span class="comment">#     Merge branch 'branch-c' into branch-d</span></div><div class="line">&gt;</div><div class="line"><span class="comment">#     Conflicts:</span></div><div class="line"><span class="comment">#         README.md</span></div></pre></td></tr></table></figure>
+
 
       
     </div>
@@ -182,6 +221,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/blog/2015/04/01/Generalized-Distance-Transform/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Generalized Distance Transform
+        
+      </div>
+    </a>
   
   
     <a href="/blog/2015/03/19/Articulated-Pose-Estimation-by-a-Graphical-Model-with-Image-Dependent-Pairwise-Relations/" id="article-nav-older" class="article-nav-link-wrap">
@@ -206,7 +254,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/知识库/">知识库</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">3</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/知识库/">知识库</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -215,7 +263,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Caffe/">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deep-Learning/">Deep Learning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/classification/">classification</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/linear-regression/">linear regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/newton-method/">newton method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/optimization/">optimization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pose-estimation/">pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Caffe/">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deep-Learning/">Deep Learning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/classification/">classification</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/distance-transform/">distance transform</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/linear-regression/">linear regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/newton-method/">newton method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/optimization/">optimization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pose-estimation/">pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -224,7 +272,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/blog/tags/Caffe/" style="font-size: 10.00px;">Caffe</a><a href="/blog/tags/DPM/" style="font-size: 10.00px;">DPM</a><a href="/blog/tags/Deep-Learning/" style="font-size: 10.00px;">Deep Learning</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/Logistic-regression/" style="font-size: 10.00px;">Logistic regression</a><a href="/blog/tags/MCMC/" style="font-size: 10.00px;">MCMC</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 10.00px;">articulated pose estimation</a><a href="/blog/tags/classification/" style="font-size: 10.00px;">classification</a><a href="/blog/tags/feature/" style="font-size: 10.00px;">feature</a><a href="/blog/tags/git/" style="font-size: 10.00px;">git</a><a href="/blog/tags/gradient-descent/" style="font-size: 20.00px;">gradient descent</a><a href="/blog/tags/hinge-loss/" style="font-size: 10.00px;">hinge loss</a><a href="/blog/tags/human-detection/" style="font-size: 10.00px;">human detection</a><a href="/blog/tags/linear-regression/" style="font-size: 10.00px;">linear regression</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 10.00px;">mixtures of parts</a><a href="/blog/tags/newton-method/" style="font-size: 10.00px;">newton method</a><a href="/blog/tags/optimization/" style="font-size: 10.00px;">optimization</a><a href="/blog/tags/pictorial-model/" style="font-size: 10.00px;">pictorial model</a><a href="/blog/tags/pose-estimation/" style="font-size: 10.00px;">pose estimation</a><a href="/blog/tags/sampling/" style="font-size: 10.00px;">sampling</a>
+      <a href="/blog/tags/Caffe/" style="font-size: 15.00px;">Caffe</a><a href="/blog/tags/DPM/" style="font-size: 15.00px;">DPM</a><a href="/blog/tags/Deep-Learning/" style="font-size: 15.00px;">Deep Learning</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/LSVM/" style="font-size: 10.00px;">LSVM</a><a href="/blog/tags/Logistic-regression/" style="font-size: 15.00px;">Logistic regression</a><a href="/blog/tags/MCMC/" style="font-size: 15.00px;">MCMC</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 15.00px;">articulated pose estimation</a><a href="/blog/tags/classification/" style="font-size: 15.00px;">classification</a><a href="/blog/tags/distance-transform/" style="font-size: 15.00px;">distance transform</a><a href="/blog/tags/feature/" style="font-size: 15.00px;">feature</a><a href="/blog/tags/git/" style="font-size: 15.00px;">git</a><a href="/blog/tags/gradient-descent/" style="font-size: 20.00px;">gradient descent</a><a href="/blog/tags/hinge-loss/" style="font-size: 15.00px;">hinge loss</a><a href="/blog/tags/human-detection/" style="font-size: 15.00px;">human detection</a><a href="/blog/tags/linear-regression/" style="font-size: 15.00px;">linear regression</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 15.00px;">mixtures of parts</a><a href="/blog/tags/newton-method/" style="font-size: 15.00px;">newton method</a><a href="/blog/tags/optimization/" style="font-size: 15.00px;">optimization</a><a href="/blog/tags/pictorial-model/" style="font-size: 15.00px;">pictorial model</a><a href="/blog/tags/pose-estimation/" style="font-size: 15.00px;">pose estimation</a><a href="/blog/tags/sampling/" style="font-size: 15.00px;">sampling</a>
     </div>
   </div>
 
@@ -233,7 +281,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/03/">March 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/02/">February 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">4</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/04/">April 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/03/">March 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/02/">February 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -243,6 +291,10 @@
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/blog/2015/04/01/Generalized-Distance-Transform/">Generalized Distance Transform</a>
+          </li>
         
           <li>
             <a href="/blog/2015/03/25/Git-in-a-Nutshell/">Git in a Nutshell</a>
@@ -258,10 +310,6 @@
         
           <li>
             <a href="/blog/2015/02/06/Linear-Regression/">Linear Regression</a>
-          </li>
-        
-          <li>
-            <a href="/blog/2015/02/05/hinge-loss/">Hinge Loss</a>
           </li>
         
       </ul>
@@ -308,6 +356,8 @@
     <a href="/blog/" class="mobile-nav-link">Blog</a>
   
     <a href="/blog/PRML" class="mobile-nav-link">PRML</a>
+  
+    <a href="/blog/Deep-Learning" class="mobile-nav-link">Deep Learning</a>
   
     <a href="/blog/archives" class="mobile-nav-link">Archives</a>
   

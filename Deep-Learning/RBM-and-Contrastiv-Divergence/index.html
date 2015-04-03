@@ -1,20 +1,32 @@
 
+
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: classification | Pumpkin</title>
+  <title>Pumpkin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Be grateful for each new day">
+  <meta name="description" content="RBM and CD Algorithm
+
+(本节内容涉及图模型及exponential family, 请参考 PRML: Graphical Models)
+Deep Belief Networks (DBNs) 是建立在 Restricted Boltzmann Machine (RBM) 基础上的, 而RBM是一种 energy-based model, 因此本节会从 Energy-bas">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Pumpkin">
-<meta property="og:url" content="http://bearpaw.github.io/blog/blog/tags/classification/">
+<meta property="og:url" content="http://bearpaw.github.io/blog/blog/Deep-Learning/RBM-and-Contrastiv-Divergence/index.html">
 <meta property="og:site_name" content="Pumpkin">
-<meta property="og:description" content="Be grateful for each new day">
+<meta property="og:description" content="RBM and CD Algorithm
+
+(本节内容涉及图模型及exponential family, 请参考 PRML: Graphical Models)
+Deep Belief Networks (DBNs) 是建立在 Restricted Boltzmann Machine (RBM) 基础上的, 而RBM是一种 energy-based model, 因此本节会从 Energy-bas">
+<meta property="og:image" content="http://upload.wikimedia.org/wikipedia/commons/7/7a/Boltzmannexamplev1.png">
+<meta property="og:image" content="http://deeplearning.net/tutorial/_images/rbm.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Pumpkin">
-<meta name="twitter:description" content="Be grateful for each new day">
+<meta name="twitter:description" content="RBM and CD Algorithm
+
+(本节内容涉及图模型及exponential family, 请参考 PRML: Graphical Models)
+Deep Belief Networks (DBNs) 是建立在 Restricted Boltzmann Machine (RBM) 基础上的, 而RBM是一种 energy-based model, 因此本节会从 Energy-bas">
 <link rel="publisher" href="https://plus.google.com/u/0/+WeiYangplatero">
 
   
@@ -86,64 +98,82 @@
   </div>
 </header>
     <div class="outer">
-      <section id="main">
-  
-    <article id="post-Logistic-Regression" class="article article-type-post" itemscope itemprop="blogPost">
+      <section id="main"><article id="page-undefined" class="article article-type-page" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2015/02/09/Logistic-Regression/" class="article-date">
-  <time datetime="2015-02-09T01:26:01.000Z" itemprop="datePublished">2月 9 2015</time>
+    <a href="/blog/Deep-Learning/RBM-and-Contrastiv-Divergence/index.html" class="article-date">
+  <time datetime="2015-03-27T02:31:14.000Z" itemprop="datePublished">3月 27 2015</time>
 </a>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/blog/categories/知识库/">知识库</a>
-  </div>
-
   </div>
   <div class="article-inner">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/02/09/Logistic-Regression/">Logistic Regression</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
-      
-        <p>Logistic Regression (以下简称LR)解决的是分类问题. 考虑两类分类问题, 如判断邮件是否是垃圾邮件, 或肿瘤是否为恶性肿瘤, 样本标签只有两类: 0表示negtive, 1表示positive. 考虑用之前讨论过的Linear regression来解决这个问题, 如图1所示, 当样本分布理想时, 可以通过设定阈值来对样本进行分类 (绿色); 但是当样本分布不理想时, 拟合出来的linear function偏差比较大, 设定阈值的方法不能获得理想的分类结果 (蓝色). Linear regression的另一个问题是其给出的预测范围是 $h(x) \in (-\infty, \infty)$, 而分类问题的标签就两个$\{0, 1\}$, 其理想的predict function应该是 $h(x) \in [0, 1]$, 所以linear regression也不适合分类问题.</p>
-<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/linear-regression-for-classification.png" alt="图1. 用linear regression模型解决分类问题"></p>
-<p>
-        
-          <p class="article-more-link">
-            <a href="/blog/2015/02/09/Logistic-Regression/#more">Read More</a>
-          </p>
-        
+      	  
+		<!-- 文章目录开始 -->
+		
+			<div id="toc" class="toc-article">
+				<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RBM_and_CD_Algorithm"><span class="toc-number">1.</span> <span class="toc-text">RBM and CD Algorithm</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Energy-Based_Models_(EBM)"><span class="toc-number">1.1.</span> <span class="toc-text">Energy-Based Models (EBM)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#undefined"><span class="toc-number">1.1.1.</span> <span class="toc-text"> EBM with Latent Variables </span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#undefined"><span class="toc-number">1.2.</span> <span class="toc-text"> RBM </span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#undefined"><span class="toc-number">1.2.1.</span> <span class="toc-text"> RBMs with binary units</span></a></li></ol></li></ol></li></ol>
+			</div>
+		
+		<!-- 文章目录结束 -->
+        <h1 id="RBM_and_CD_Algorithm">RBM and CD Algorithm</h1>
+<hr>
+<p>(本节内容涉及图模型及exponential family, 请参考 <a href="">PRML: Graphical Models</a>)</p>
+<p>Deep Belief Networks (DBNs) 是建立在 Restricted Boltzmann Machine (RBM) 基础上的, 而RBM是一种 energy-based model, 因此本节会从 Energy-based model出发, 结合 graphical models 来引出 RBM的概念. 同时也会介绍 RBM 的参数学习算法: Contrastive Divergence (CD).</p>
+<h2 id="Energy-Based_Models_(EBM)">Energy-Based Models (EBM)</h2>
+<p>EBM通过能量方程来定义随机变量的概率分布, 例如</p>
+<span>$$p(x) = \frac{e^{-E(x)}}{Z}, \qquad \mbox{where } Z = \sum_x e^{-E(x)}$$</span><br>其中 $Z$ 是partition function. 通常我们希望最大化概率 (使 $p(x)$ 趋近于1), 也就对应着最小化能量函数 (使 $-E(x)$ 趋近于0). EBM是exponential family, 会带来计算上的一些方便.<br><br>那么如何学习EBM的参数呢? 很容易想到最大似然估计 (MLE). 因此给定N个训练样本 <span>$D = \{x^i\}$</span>, 我们可以最小化negative log likelihood:<br><span>$$L(D; \theta) = -\frac{1}{N}\sum_{x^{i} \in D} \log p(x^{i})$$</span><br>然后通过梯度法计算梯度下降方向 <span>$-\frac{\partial L(D; \theta)}{\partial \theta}$</span> 来更新参数.<br><br><h3> EBM with Latent Variables </h3><br>有时候观察到的数据 $x$ 不完整, 或者我们单纯想增加模型的表达能力, 这时我们可以往EBM引入隐变量. 那么EBM就可以表达为<br><span>$$p(x) = \sum_h p(x, h) = \sum_h \frac{e^{-E(x, h)}}{Z}$$</span><br>我们定义free energy如下,<br><span>$$F(x) = -\log \sum_h e^{-E(x, h)}$$</span><br>则有<br><span>$$\begin{eqnarray}
+-F(x) &=& \log \sum_h e^{-E(x, h)} \\
+\Leftrightarrow e^{-F(x)} &=& e^{ \log \sum_h e^{-E(x, h)}} \\
+\Leftrightarrow e^{-F(x)} &=& \sum_h e^{-E(x, h)}\\
+\end{eqnarray}$$</span><br>那么EBM就可以用free energy表示为<br><span>$$p(x) = \frac{e^{-F(x)}}{Z}, \qquad \mbox{where } Z = \sum_x e^{-F(x)}$$</span><br>通过上面式子, 我们可以计算 <strong>log likelihood gradient</strong><br><span>$$\begin{eqnarray}
+\frac{\partial \log p(x)}{\partial \theta} &=& -\frac{\partial F(x)}{\partial \theta} - \frac{1}{Z}\frac{\partial Z}{\partial \theta} \\
+&=& -\frac{\partial F(x)}{\partial \theta}  - \sum_{\tilde{x}}  e^{-F({\tilde{x}} )}\frac{\partial (-F({\tilde{x}} ))}{\partial \theta} \\
+&=& -\frac{\partial F(x)}{\partial \theta} +  \sum_{\tilde{x}}   \frac{e^{-F({\tilde{x}} )}}{Z}\frac{\partial F({\tilde{x}} )}{\partial \theta} \\
+&=& -\frac{\partial F(x)}{\partial \theta} +  \sum_{\tilde{x}}   p({\tilde{x}} )\frac{\partial F({\tilde{x}} )}{\partial \theta} 
+\end{eqnarray}$$</span><br>因此, 在训练集上的平均log likelihood gradient可以通过下式计算<br><span>$$E_{\hat{p}}\left[\frac{\partial \log p(x)}{\partial \theta}\right] = -E_{\hat{p}}\left[\frac{\partial F(x)}{\partial \theta}\right] + E_p\left[\frac{\partial F(x)}{\partial \theta}\right]$$</span><br>其中 <span>$E_{\hat{p}}$</span>表示样本均值, <span>$E_p$</span>表示模型真是的期望, 只能通过采样计算.<br><br><h2> RBM </h2><br>首先介绍Boltzmann Machine (BM). BM 中有两种变量, observed和latent, 变量之间是全连接关系,<br>如下图所示<br><img src="http://upload.wikimedia.org/wikipedia/commons/7/7a/Boltzmannexamplev1.png" alt="Boltzmann Machine"><br><br>定义在BM上的Energy为<br><span>$$E(v, h; b, c, W, U, V) = -(b^Tv + c^Th +  h^TWv+ v^TUv + h^T V h)$$</span><br>这个模型看着就复杂啊! 于是就有了RBM, 如下图所示, RBM与BM的区别就是, 在hidden variable之间, 以及observed variable之间是没有连接的. 这样只要给定$v$ (或$h$), 那么$h$ (或$v$)之间就是相互独立的 (条件独立).<br><img src="http://deeplearning.net/tutorial/_images/rbm.png" alt="Restricted Boltzmann Machine"><br><br>RBM的 Energy function 定义为:<br><span>$$E(v,h) = - b'v - c'h - h'Wv$$</span><br>其中 $W$ 表示了连接 hidden 和 visible variable之间的权重, $b, c$ 是偏置. 我们可以得到联合概率和data likelihood<br><span>$$\begin{eqnarray}
+	p(v, h) = \frac{e^{-E(v, h)}}{\sum_{v, h} e^{-E(v, h)} } \\
+	p(v) = \frac{\sum_h e^{-E(v, h)}}{\sum_{v, h} e^{-E(v, h)} } \\
+\end{eqnarray}$$</span>
+
+<p>因此, free energy就可以推出来</p>
+<p><span>$$\begin{eqnarray}	
+	\mathcal{F}(v) &=& -\log \sum_h e^{(b'v + c'h + h'Wv)} \\
+	&=& -\log e^{(b'v)} \sum_h  e^{(c'h + h'Wv)} \\
+	&=& -b'v - \log \sum_{h_i}  e^{\left(\sum_i h_i (c_i + W_i v)\right)} \\
+	&=& -b'v - \log \sum_{h_i} \prod_i e^{( h_i (c_i + W_i v))} \\
+	&=& - b'v - \sum_i \log \sum_{h_i} e^{(h_i (c_i + W_i v))} 
+\end{eqnarray}$$</span><br>从RBM的图模型就可以看出来下述的条件独立关系 (当然也是可以推导出来的, 参见<a href="">ftml</a> pp.56):</p>
+<p><span>$$\begin{eqnarray}	
+p(h|v) &= \prod_i p(h_i|v) \\
+p(v|h) &= \prod_j p(v_j|h).
+\end{eqnarray}$$</span><br> <h3> RBMs with binary units</h3></p>
+
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/02/09/Logistic-Regression/" data-id="ws35bga9igv3vh8n" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/Deep-Learning/RBM-and-Contrastiv-Divergence/index.html" data-id="wlmi3kn4j3wkeh3e" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
-        <a href="http://bearpaw.github.io/blog/2015/02/09/Logistic-Regression/#ds-thread" class="article-comment-link">Comments</a>
+        <a href="http://bearpaw.github.io/blog/Deep-Learning/RBM-and-Contrastiv-Divergence/index.html#ds-thread" class="article-comment-link">Comments</a>
       
 
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/classification/">classification</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/newton-method/">newton method</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/optimization/">optimization</a></li></ul>
-
     </footer>
   </div>
+  
+    
   
 </article>
 
 
-  
-  
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="Deep-Learning/RBM-and-Contrastiv-Divergence/index.html" data-title="" data-url="http://bearpaw.github.io/blog/Deep-Learning/RBM-and-Contrastiv-Divergence/index.html"></div>
+  </section>
 </section>
       
       <aside id="sidebar">
@@ -378,3 +408,4 @@ MathJax.Hub.Queue(function() {
 </script>
 </body>
 </html>
+

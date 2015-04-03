@@ -61,6 +61,8 @@
         
           <a class="main-nav-link" href="/blog/PRML">PRML</a>
         
+          <a class="main-nav-link" href="/blog/Deep-Learning">Deep Learning</a>
+        
           <a class="main-nav-link" href="/blog/archives">Archives</a>
         
           <a class="main-nav-link" href="http://bearpaw.github.io">About</a>
@@ -85,6 +87,77 @@
 </header>
     <div class="outer">
       <section id="main">
+  
+    <article id="post-Generalized-Distance-Transform" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2015/04/01/Generalized-Distance-Transform/" class="article-date">
+  <time datetime="2015-04-01T12:46:50.000Z" itemprop="datePublished">4月 1 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/知识库/">知识库</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2015/04/01/Generalized-Distance-Transform/">Generalized Distance Transform</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      	  
+		<!-- 文章目录开始 -->
+		
+		<!-- 文章目录结束 -->
+        <p>距离变换于1966年被学者首次提出,目前已被广泛应用于图像分析、计算机视觉、模式识别等领域，人们利用它来实现目标细化、骨架提取、形状插值及匹配、粘连物体的分离等。距离变换是针对二值图像的一种变换。在二维空间中，一幅二值图像可以认为仅仅包含目标和背景两种像素，目标的像素值为1，背景的像素值为0；距离变换的结果不是另一幅二值图像，而是一幅灰度级图像，即距离图像，图像中每个像素的灰度值为该像素与距其最近的背景像素间的距离, 如下图所示。<a href="http://blog.csdn.net/carson2005/article/details/21617897" target="_blank" rel="external">[参考: 距离变换]</a></p>
+<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/@/blog/dt.png" alt="Distance Transform"></p>
+<h2 id="传统距离变换">传统距离变换</h2>
+<p>传统DT定义在grid的点上. 给定grid $G$, 令 $x, y$ 是 $G$ 上的两个点, 并且定义距离度量 $d(x, y)$. 给定一个集合 <span>$B \subseteq G$</span>, 那么 $B$ 在 $G$ 上的距离变换 <span>$D_B(x)$</span> 就定义为<strong>$G$ 上的每个点到 $B$ 的最近距离</strong>:</p>
+<span>$$D_B(x) = \min_{y\in B} d(x, y).$$</span>
+
+<p>如果我们在 $G$ 上定义一个 indicator function <span>$\mathbf{1}_B(y)$</span>:</p>
+<span>$$\mathbf{1}_B(y) :=
+	\begin{cases} 
+	0 &\text{if } y \in B, \\
+	\infty &\text{if } y \notin B.
+	\end{cases}$$</span><br>那么DT可以重新formulate为下列形式:<br><span>$$D_B(x) = \min_{y\in G} (d(x, y) + \mathbf{1}_B(y)).$$</span><br>这和本文开篇的例子是一致的.<br><br><h3> Generalized 距离变换 </h3><br>上一节定义的 <span>$\mathbf{1}_B(y)$</span> 是一个定义在 $G$ 上的二值函数, 假设我们将其替换成定义在 $G$ 上的任意函数 $f(y)$, 就得到了generalized DT:<br><span>$$D_f(x) = \min_{y\in G} (d(x, y) + f(y)).$$</span>
+
+<p>假设 $G$ 上共有 $k$ 个点, 那么对每一个 $G$ 上的点, 都需要将所有点扫描一次, 因此算法复杂度是 $O(k^2)$. 从上面式子可以看出, DT 直观上是对 $x$ 找到对应的 $y$, 使得 $x, y$ 之间的距离尽可能小, 同时函数值 $f(y)$ 也要小.</p>
+<h3 id="参考">参考</h3>
+<ol>
+<li><a href="http://blog.csdn.net/abcjennifer/article/details/7617883" target="_blank" rel="external">距离变换 (Rachel Zhang的专栏)</a></li>
+<li>Pictorial Structures for Object Recognition. Felzenszwalb, Pedro F., and Daniel P. Huttenlocher. IJCV (2005).</li>
+<li>An example on using the distance transform can be found at <code>opencv_source_code/samples/cpp/distrans.cpp</code></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://bearpaw.github.io/blog/2015/04/01/Generalized-Distance-Transform/" data-id="y3dd9qnzb6zpmrjy" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://bearpaw.github.io/blog/2015/04/01/Generalized-Distance-Transform/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/distance-transform/">distance transform</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-Logistic-Regression" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -269,7 +342,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/知识库/">知识库</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">3</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/知识库/">知识库</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -278,7 +351,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Caffe/">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deep-Learning/">Deep Learning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/classification/">classification</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/linear-regression/">linear regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/newton-method/">newton method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/optimization/">optimization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pose-estimation/">pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Caffe/">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deep-Learning/">Deep Learning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/classification/">classification</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/distance-transform/">distance transform</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/linear-regression/">linear regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/newton-method/">newton method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/optimization/">optimization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pose-estimation/">pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -287,7 +360,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/blog/tags/Caffe/" style="font-size: 10.00px;">Caffe</a><a href="/blog/tags/DPM/" style="font-size: 10.00px;">DPM</a><a href="/blog/tags/Deep-Learning/" style="font-size: 10.00px;">Deep Learning</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/Logistic-regression/" style="font-size: 10.00px;">Logistic regression</a><a href="/blog/tags/MCMC/" style="font-size: 10.00px;">MCMC</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 10.00px;">articulated pose estimation</a><a href="/blog/tags/classification/" style="font-size: 10.00px;">classification</a><a href="/blog/tags/feature/" style="font-size: 10.00px;">feature</a><a href="/blog/tags/git/" style="font-size: 10.00px;">git</a><a href="/blog/tags/gradient-descent/" style="font-size: 20.00px;">gradient descent</a><a href="/blog/tags/hinge-loss/" style="font-size: 10.00px;">hinge loss</a><a href="/blog/tags/human-detection/" style="font-size: 10.00px;">human detection</a><a href="/blog/tags/linear-regression/" style="font-size: 10.00px;">linear regression</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 10.00px;">mixtures of parts</a><a href="/blog/tags/newton-method/" style="font-size: 10.00px;">newton method</a><a href="/blog/tags/optimization/" style="font-size: 10.00px;">optimization</a><a href="/blog/tags/pictorial-model/" style="font-size: 10.00px;">pictorial model</a><a href="/blog/tags/pose-estimation/" style="font-size: 10.00px;">pose estimation</a><a href="/blog/tags/sampling/" style="font-size: 10.00px;">sampling</a>
+      <a href="/blog/tags/Caffe/" style="font-size: 15.00px;">Caffe</a><a href="/blog/tags/DPM/" style="font-size: 15.00px;">DPM</a><a href="/blog/tags/Deep-Learning/" style="font-size: 15.00px;">Deep Learning</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/LSVM/" style="font-size: 10.00px;">LSVM</a><a href="/blog/tags/Logistic-regression/" style="font-size: 15.00px;">Logistic regression</a><a href="/blog/tags/MCMC/" style="font-size: 15.00px;">MCMC</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 15.00px;">articulated pose estimation</a><a href="/blog/tags/classification/" style="font-size: 15.00px;">classification</a><a href="/blog/tags/distance-transform/" style="font-size: 15.00px;">distance transform</a><a href="/blog/tags/feature/" style="font-size: 15.00px;">feature</a><a href="/blog/tags/git/" style="font-size: 15.00px;">git</a><a href="/blog/tags/gradient-descent/" style="font-size: 20.00px;">gradient descent</a><a href="/blog/tags/hinge-loss/" style="font-size: 15.00px;">hinge loss</a><a href="/blog/tags/human-detection/" style="font-size: 15.00px;">human detection</a><a href="/blog/tags/linear-regression/" style="font-size: 15.00px;">linear regression</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 15.00px;">mixtures of parts</a><a href="/blog/tags/newton-method/" style="font-size: 15.00px;">newton method</a><a href="/blog/tags/optimization/" style="font-size: 15.00px;">optimization</a><a href="/blog/tags/pictorial-model/" style="font-size: 15.00px;">pictorial model</a><a href="/blog/tags/pose-estimation/" style="font-size: 15.00px;">pose estimation</a><a href="/blog/tags/sampling/" style="font-size: 15.00px;">sampling</a>
     </div>
   </div>
 
@@ -296,7 +369,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/03/">March 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/02/">February 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">4</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/04/">April 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/03/">March 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/02/">February 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -306,6 +379,10 @@
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/blog/2015/04/01/Generalized-Distance-Transform/">Generalized Distance Transform</a>
+          </li>
         
           <li>
             <a href="/blog/2015/03/25/Git-in-a-Nutshell/">Git in a Nutshell</a>
@@ -321,10 +398,6 @@
         
           <li>
             <a href="/blog/2015/02/06/Linear-Regression/">Linear Regression</a>
-          </li>
-        
-          <li>
-            <a href="/blog/2015/02/05/hinge-loss/">Hinge Loss</a>
           </li>
         
       </ul>
@@ -371,6 +444,8 @@
     <a href="/blog/" class="mobile-nav-link">Blog</a>
   
     <a href="/blog/PRML" class="mobile-nav-link">PRML</a>
+  
+    <a href="/blog/Deep-Learning" class="mobile-nav-link">Deep Learning</a>
   
     <a href="/blog/archives" class="mobile-nav-link">Archives</a>
   
