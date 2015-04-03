@@ -146,7 +146,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/04/03/latent-structural-svm/" data-id="kvzenwzsqg3ykayx" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/2015/04/03/latent-structural-svm/" data-id="ra7uz13076k7ndfc" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -155,142 +155,6 @@
 
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/latent-ssvm/">latent ssvm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/ssvm/">ssvm</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-latent-structural-svm" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blog/2015/04/03/latent-structural-svm/" class="article-date">
-  <time datetime="2015-04-03T03:11:33.000Z" itemprop="datePublished">4月 3 2015</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/04/03/latent-structural-svm/">Latent Structural SVM</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      	  
-		<!-- 文章目录开始 -->
-		
-		<!-- 文章目录结束 -->
-        <blockquote>
-<p>Yu, Chun-Nam John, and Thorsten Joachims. “Learning structural SVMs with latent variables.” ICML, 2009.</p>
-</blockquote>
-<h2 id="Intuition">Intuition</h2>
-<p><strong>Structured Learning: </strong>传统判别式学习中, 训练样本由 <span>$\{x, y\}$</span> 构成，我们的目标是学习一个从输入到输出的映射<span>$f: x\rightarrow y$</span>. 以分类问题为例, <span>$y \in  \{1,2,3,⋯,N\}$</span> 是样本label. 但在有些问题中, 我们的输出可以是复杂的structured object, 比如parse tree, pose等等, 于是就出现了structured learning.</p>
-<p><strong>Latent structured learning: </strong>在结构化学习问题中, 有一些很有用的信息可能并未在训练数据 <span>$\{x, y\}$</span>中体现出来, 如human detection问题中, 输入$x$是图像, 输出$y$是人的bounding box, 而人体各个part的位置也是很有用的信息, 但是训练数据并未包含各个part的位置, 因此需要当作latent variable. 因此很有必要在学习模型时引入这些有用的latent variable的信息.</p>
-<h2 id="Model">Model</h2>
-<p>在下面问题中, 训练数据集为 <span>$S = \{(x_1, y_1), \cdots, (x_n, y_n)\} \in (X\times Y)^n$</span>.</p>
-<h3 id="SSVM">SSVM</h3>
-<p>SSVM希望学习到下列判别函数</p>
-<span>$$f_w(x) = \arg\max_{y\in Y} [w\cdot \Phi(x, y)]$$</span><br>其中 <span>$\Phi(x, y)$</span> 是表达了输入 $x$ 与输出 $y$ 之间的关系的joint feature vector. 求argmax的过程就是inference, 求解最优 $w$ 的过程就是learning.<br><br>SSVM通过在训练集上最小化risk来得到, risk定义为 <span>$\Delta (y, \hat{y})$</span>, 度量了预测结果 <span>$\hat{y}$</span> 与真实label $y$ 之间的差异. 通常情况下risk都是离散的, 非凸的, 不好优化, 因此可以找一个凸的上界, 通过最小化上界来最小化原来的risk, 这个上界可以表示为:<br><span>$$\Delta (y_i, \hat{y}_i(w)) \leq \max_{\hat{y}\in Y} [\Delta (y_i, \hat{y}) + w\cdot \Phi(x_i, \hat{y})] - w\cdot \Phi(x_i, y_i)$$</span><br>其中<br><span>$$\hat{y}_i(w) = \arg\max_{y\in Y} w\cdot \Phi(x_i, y) $$</span><br>直观理解为，max那一项是通过搜索找出最接近真实label的 <span>$\hat{y}$</span> 的得分；最后一项是真实label的真实得分 <a href="http://zhangliliang.com/2014/11/22/paper-note-latent-structural-svm/" target="_blank" rel="external">[引]</a>。<br><br>如果用SVM来formulate这个问题, 那么可以把上面定义的下届作为一个regularizer加到cost function里面, 这样就得到了下面的凸优化问题:<br><span>$$\min_w \frac{1}{2}\|w\|^2+C\sum_{i=1}^n \left[\Delta (y_i, \hat{y}_i(w)) \leq \max_{\hat{y}\in Y} [\Delta (y_i, \hat{y}) + w\cdot \Phi(x_i, \hat{y})] - w\cdot \Phi(x_i, y_i) \right]$$</span>
-
-<h3 id="Latent_SSVM">Latent SSVM</h3>
-<p>在intuition里面我们已经讨论过, 有时候输入和输出的关系不能完全由 x, y决定, 还和某个隐变量 <span>$h \in H$</span> 息息相关, joint feature 可以定义为 <span>$\Phi(x, y, h)$</span>, 这样判别函数也就变成了</p>
-<span>$$f_w(x) = \arg\max_{(y, h) \in Y\times H} [w\cdot \Phi(x, y, h)]$$</span><br>类似SSVM, 我们也需要定义risk. 但是注意在现实问题中, 隐变量并不是输出 (比如DPM中, part只是中间步骤用的, 最终得到的还是整体的bbox), 因此risk不应该depend on隐变量. 这种考虑不仅更贴合实际, 而且简化了risk计算, 用数学公式可以表达如下:<br><span>$$\Delta ((y_i, h^*_i(w), (\hat{y}_i(w), \hat{h}_i(w)) = \Delta (y_i,\hat{y}_i(w), \hat{h}_i(w))$$</span><br>其中 <span>$h^*_i(w)$</span> 是”最优的”能描述x与y关系的隐变量. 基于此, risk的上界为:<br><span>$$\Delta ((y_i, h^*_i(w), (\hat{y}_i(w), \hat{h}_i(w)) \leq \left(\max_{\hat{y}, \hat{h}\in Y\times H} [\Delta (y_i, \hat{y}, \hat{h}) + w\cdot \Phi(x_i, \hat{y}, \hat{h})]\right) - \left(\max_{h\in H}w\cdot \Phi(x_i, y_i, h)\right)$$</span><br>定义好上界后, 同SSVM一样, 可以formulate成带正则项的SVM<br><span>$$\min_w \frac{1}{2}\|w\|^2+C\sum_{i=1}^n \left(\max_{\hat{y}, \hat{h}\in Y\times H} [\Delta (y_i, \hat{y}, \hat{h}) + w\cdot \Phi(x_i, \hat{y}, \hat{h})]\right) -  C\sum_{i=1}^n \left(\max_{h\in H}w\cdot \Phi(x_i, y_i, h)\right)$$</span>
-
-<h2 id="Learning">Learning</h2>
-<p>LSSVM的目标函数是两个convex function的差, 也就可以理解为convex + concave, 因此可以用Concave-Convex Procedure (<a href="http://www.stat.ucla.edu/~yuille/pubs/optimize_papers/cccp_nips01.pdf" target="_blank" rel="external">Yuille &amp; Rangarajan, 2003</a>)求解.</p>
-<h3 id="CCCP">CCCP</h3>
-<p>CCCP解决的是最小化两个convex function $f(w), g(w)$ 的差的算法</p>
-<span>$$\min_w f(w) + (-g(w)).$$</span><br><img alt="CCCP" src="http://7u2pi6.com1.z0.glb.clouddn.com/cccp.png" width="440px"><br><br>首先, 第3行先找到一个超平面 <span>$v_t$</span>, 使得右边是 $-g(w)$ 的一个上界 , 然后最小化 $f(w) + Upperbound$ 来更新参数. CCCP能保证收敛.<br><br>### CCCP迭代求解LSSVM<br><strong>Step 1: </strong>观察lssvm的目标函数, 我们先要找concave part的上界. 首先fix参数 <span>$w_t$</span>, 求解最优的 <span>$h^*$</span>,<br><span>$$h^* = \arg\max_{h\in H}w\cdot \Phi(x_i, y_i, h)$$</span><br>这样定义上界的超平面  <span>$v_t$</span> 为:<br><span>$$v_t = \Phi(x_i, y_i, h^*)$$</span>
-
-<p><strong>Step 2: </strong> fix <span>$v_t$</span> , 更新模型参数 <span>$w_{t+1}$</span></p>
-<p><span>$$\min_w \frac{1}{2}\|w\|^2+C\sum_{i=1}^n \max_{\hat{y}, \hat{h}\in Y\times H} [\Delta (y_i, \hat{y}, \hat{h}) + w\cdot \Phi(x_i, \hat{y}, \hat{h})] -  C\sum_{i=1}^n\max_{h\in H}w\cdot \Phi(x_i, y_i, h^*_i)$$</span><br>这一步用ssvm的求解方法解就好了.</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://bearpaw.github.io/blog/2015/04/03/latent-structural-svm/" data-id="1siyxmi4vki3kxid" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://bearpaw.github.io/blog/2015/04/03/latent-structural-svm/#ds-thread" class="article-comment-link">Comments</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/latent-ssvm/">latent ssvm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/ssvm/">ssvm</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Object-Detection-with-Discriminatively-Trained-Part-Based-Models" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blog/2015/04/02/Object-Detection-with-Discriminatively-Trained-Part-Based-Models/" class="article-date">
-  <time datetime="2015-04-02T02:24:39.000Z" itemprop="datePublished">4月 2 2015</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blog/categories/论文笔记/">论文笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/04/02/Object-Detection-with-Discriminatively-Trained-Part-Based-Models/">Object Detection with Discriminatively Trained Part Based Models</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      	  
-		<!-- 文章目录开始 -->
-		
-		<!-- 文章目录结束 -->
-        <blockquote>
-<p>P. Felzenszwalb, R. Girshick, D. McAllester, D. Ramanan. Object Detection with Discriminatively Trained Part Based Models. TPAMI. 2010. <a href="http://www.cs.berkeley.edu/~rbg/papers/Object-Detection-with-Discriminatively-Trained-Part-Based-Models--Felzenszwalb-Girshick-McAllester-Ramanan.pdf" target="_blank" rel="external">pdf</a></p>
-</blockquote>
-<p>最近看代码搞不清楚Latent Structured SVM是怎么弄的. 追根溯源又回到DPM. 做个小结后再去看S-SVM.</p>
-<h2 id="Highlight">Highlight</h2>
-<ol>
-<li>提出Mixtures of Deformable Part Based Models;</li>
-<li>提出了Latent SVM (LSVM) 来训练含hidden variable的模型 (因为本文的part location并没有标注, 在训练时只能当作latent/hidden variable);</li>
-<li>Deformation Cost: 每个part相对root都有一个理想位置, 当产生偏移时, 需要给予一定的惩罚. 这个思想在后续工作中多有用到.</li>
-<li>Training 阶段用通过mining hard negative examples 来减少潜在的false positives.</li>
-<li>通过对HOG进行主成分分析对其进行降维, 实现HOG快速计算.</li>
-</ol>
-<p><img src="http://www.cs.berkeley.edu/~rbg/latent/2007_008221.jpg" alt="DPM"><br><img src="http://www.cs.berkeley.edu/~rbg/latent/bicycle_model.jpg" alt="从左到右分别是 (a) root filter; (b) part filter; (c) Spatial models: 反应了part放在偏离中心的位置会带来的cost"></p>
-<h2 id="Models">Models</h2>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://bearpaw.github.io/blog/2015/04/02/Object-Detection-with-Discriminatively-Trained-Part-Based-Models/" data-id="xqv1qiesmsg9vqn1" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://bearpaw.github.io/blog/2015/04/02/Object-Detection-with-Discriminatively-Trained-Part-Based-Models/#ds-thread" class="article-comment-link">Comments</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/DPM/">DPM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/LSVM/">LSVM</a></li></ul>
 
     </footer>
   </div>
@@ -353,7 +217,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/04/01/Generalized-Distance-Transform/" data-id="y3dd9qnzb6zpmrjy" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/2015/04/01/Generalized-Distance-Transform/" data-id="28fyqckfgt5w5fap" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -379,7 +243,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/知识库/">知识库</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">5</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/知识库/">知识库</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -388,7 +252,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Caffe/">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deep-Learning/">Deep Learning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/LSVM/">LSVM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/classification/">classification</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/distance-transform/">distance transform</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/latent-ssvm/">latent ssvm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/linear-regression/">linear regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/newton-method/">newton method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/optimization/">optimization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pose-estimation/">pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ssvm/">ssvm</a><span class="tag-list-count">2</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Caffe/">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deep-Learning/">Deep Learning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/classification/">classification</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/distance-transform/">distance transform</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/latent-ssvm/">latent ssvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/linear-regression/">linear regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/newton-method/">newton method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/optimization/">optimization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pose-estimation/">pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ssvm/">ssvm</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -397,7 +261,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/blog/tags/Caffe/" style="font-size: 10.00px;">Caffe</a><a href="/blog/tags/DPM/" style="font-size: 20.00px;">DPM</a><a href="/blog/tags/Deep-Learning/" style="font-size: 10.00px;">Deep Learning</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/LSVM/" style="font-size: 10.00px;">LSVM</a><a href="/blog/tags/Logistic-regression/" style="font-size: 10.00px;">Logistic regression</a><a href="/blog/tags/MCMC/" style="font-size: 10.00px;">MCMC</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 10.00px;">articulated pose estimation</a><a href="/blog/tags/classification/" style="font-size: 10.00px;">classification</a><a href="/blog/tags/distance-transform/" style="font-size: 10.00px;">distance transform</a><a href="/blog/tags/feature/" style="font-size: 10.00px;">feature</a><a href="/blog/tags/git/" style="font-size: 10.00px;">git</a><a href="/blog/tags/gradient-descent/" style="font-size: 20.00px;">gradient descent</a><a href="/blog/tags/hinge-loss/" style="font-size: 10.00px;">hinge loss</a><a href="/blog/tags/human-detection/" style="font-size: 10.00px;">human detection</a><a href="/blog/tags/latent-ssvm/" style="font-size: 20.00px;">latent ssvm</a><a href="/blog/tags/linear-regression/" style="font-size: 10.00px;">linear regression</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 10.00px;">mixtures of parts</a><a href="/blog/tags/newton-method/" style="font-size: 10.00px;">newton method</a><a href="/blog/tags/optimization/" style="font-size: 10.00px;">optimization</a><a href="/blog/tags/pictorial-model/" style="font-size: 10.00px;">pictorial model</a><a href="/blog/tags/pose-estimation/" style="font-size: 10.00px;">pose estimation</a><a href="/blog/tags/sampling/" style="font-size: 10.00px;">sampling</a><a href="/blog/tags/ssvm/" style="font-size: 20.00px;">ssvm</a>
+      <a href="/blog/tags/Caffe/" style="font-size: 10.00px;">Caffe</a><a href="/blog/tags/DPM/" style="font-size: 10.00px;">DPM</a><a href="/blog/tags/Deep-Learning/" style="font-size: 10.00px;">Deep Learning</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/Logistic-regression/" style="font-size: 10.00px;">Logistic regression</a><a href="/blog/tags/MCMC/" style="font-size: 10.00px;">MCMC</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 10.00px;">articulated pose estimation</a><a href="/blog/tags/classification/" style="font-size: 10.00px;">classification</a><a href="/blog/tags/distance-transform/" style="font-size: 10.00px;">distance transform</a><a href="/blog/tags/feature/" style="font-size: 10.00px;">feature</a><a href="/blog/tags/git/" style="font-size: 10.00px;">git</a><a href="/blog/tags/gradient-descent/" style="font-size: 20.00px;">gradient descent</a><a href="/blog/tags/hinge-loss/" style="font-size: 10.00px;">hinge loss</a><a href="/blog/tags/human-detection/" style="font-size: 10.00px;">human detection</a><a href="/blog/tags/latent-ssvm/" style="font-size: 10.00px;">latent ssvm</a><a href="/blog/tags/linear-regression/" style="font-size: 10.00px;">linear regression</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 10.00px;">mixtures of parts</a><a href="/blog/tags/newton-method/" style="font-size: 10.00px;">newton method</a><a href="/blog/tags/optimization/" style="font-size: 10.00px;">optimization</a><a href="/blog/tags/pictorial-model/" style="font-size: 10.00px;">pictorial model</a><a href="/blog/tags/pose-estimation/" style="font-size: 10.00px;">pose estimation</a><a href="/blog/tags/sampling/" style="font-size: 10.00px;">sampling</a><a href="/blog/tags/ssvm/" style="font-size: 10.00px;">ssvm</a>
     </div>
   </div>
 
@@ -406,7 +270,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/04/">April 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/03/">March 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/02/">February 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">4</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/04/">April 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/03/">March 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/02/">February 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -422,19 +286,19 @@
           </li>
         
           <li>
-            <a href="/blog/2015/04/03/latent-structural-svm/">Latent Structural SVM</a>
-          </li>
-        
-          <li>
-            <a href="/blog/2015/04/02/Object-Detection-with-Discriminatively-Trained-Part-Based-Models/">Object Detection with Discriminatively Trained Part Based Models</a>
-          </li>
-        
-          <li>
             <a href="/blog/2015/04/01/Generalized-Distance-Transform/">Generalized Distance Transform</a>
           </li>
         
           <li>
             <a href="/blog/2015/03/25/Git-in-a-Nutshell/">Git in a Nutshell</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2015/03/19/Articulated-Pose-Estimation-by-a-Graphical-Model-with-Image-Dependent-Pairwise-Relations/">Articulated Pose Estimation by a Graphical Model with Image Dependent Pairwise Relations</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2015/02/09/Logistic-Regression/">Logistic Regression</a>
           </li>
         
       </ul>
