@@ -88,6 +88,88 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-Joint-Deep-Learning-for-Pedestrian-Detection" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2015/04/05/Joint-Deep-Learning-for-Pedestrian-Detection/" class="article-date">
+  <time datetime="2015-04-05T08:12:38.000Z" itemprop="datePublished">4月 5 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/论文笔记/">论文笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2015/04/05/Joint-Deep-Learning-for-Pedestrian-Detection/">Joint Deep Learning for Pedestrian Detection</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      	  
+		<!-- 文章目录开始 -->
+		
+		<!-- 文章目录结束 -->
+        <blockquote>
+<p>Ouyang, Wanli, and Xiaogang Wang. “Joint deep learning for pedestrian detection.” ICCV 2013</p>
+</blockquote>
+<p>传统的Pedestrian detection pipeline将feature extraction, part deformation handling, occlusion handling, classification 分开做的. 本文则是提出了一个end-to-end 的DL框架, 将所有component融和在一起.</p>
+<p><img src="http://www.ee.cuhk.edu.hk/~wlouyang/projects/ouyangWiccv13Joint/images/overview.jpg" alt="Joint Deep Learning Architecture"></p>
+<h2 id="Model">Model</h2>
+<p>Model如上图所示, 其中输入是把图像, YUV特征, edge map拼在一起得到的; filtered data是conv1 后的response map; extracted feature 是进行了4X4 stride = 4 的 average pooling 后的结果. 比较关键的是part detectionmap 和 part score. 下面详细介绍这两层.</p>
+<h3 id="Part_detection_map">Part detection map</h3>
+<p><img src="http://hexo-pic-zhangliliang.qiniudn.com/%E5%B0%8FQ%E6%88%AA%E5%9B%BE-20141114155334.png" alt="Part detection map"></p>
+<p>如上图所示, 作者任何人的part可以按照大小分为不同level, 比如level 3 可以认为是level 2中的几个part组合而成. 注意在实现时, level 1-level 3 其实是同一个 conv 层, 共有20个part因此conv层就有20个channel. 比较特别的是不同channel的卷积核大小不同 (来表征不同的part size).</p>
+<h3 id="The_deformation_layer">The deformation layer</h3>
+<p>关键部分登场了. 在DPM中, 作者在model part之间的位置关系时, 定义了deformation cost, 在搜寻最佳位置时, 用了distance transform算法. 本文提出了用一种新的layer, 来模拟deformation操作. model如下图所示.</p>
+<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/deformation-layer.png" alt="Deformation Layer"></p>
+<p>我们先直观地理解一下这一层在做什么. 在经过上一层操作后, 我们已经得到了每一个part的detection score map, 用 <span>$M_p$</span> 表示. 假定我们有 $N$ 个预先定义好的 deformation map <span>$D_{n,p}$</span>, 那么我们就能定义出 (negative) deformation cost:</p>
+<p><span>$$\sum_{n=1}^N c_{n,p} D_{n,p}$$</span><br>其中 <span>$c_{n,p}$</span> 是每一个deformation map的系数, 是一个标量.</p>
+<p>回顾DPM, 每个part最后的分数是 HOG score - deformation cost. 因此我们要做的操作就是把 detection score map 和 negative deformation cost map 加起来, 最终的part score map用  <span>$B_p$</span> 表示:</p>
+<p><span>$$B_p = M_p + \sum_{n=1}^N c_{n,p} D_{n,p}$$</span><br>不过我们感兴趣的还是 max score, 因此再在 <span>$B_p$</span> 求一个max</p>
+<p><span>$$s_p = \max_{(x,y)} B_p^{(x,y)}$$</span><br>对应的位置就是</p>
+<p><span>$$(x, y)_p = \arg\max_{(x,y)} B_p^{(x,y)}$$</span><br>一般情况下,  <span>$D_{n,p}$</span> 和  <span>$c_{n,p}$</span> 都是可以学习得到的. 不过在DPM中, </p>
+<p><span>$D_{n,p}$</span> 是quadratic的预先定义好的.</p>
+<p><strong>实例分析: </strong> 示意图中就是模拟DPM中的quadratic deformation cost, 最终的part score map通过下式计算:</p>
+<p><span>$$B_p = M_p + \sum_{n=1}^4 c_{n,p} D_{n,p} + c_{5, p}\cdot \mathbf{1}$$</span><br>其中</p>
+<p><span>$$\begin{eqnarray}
+D_1^{(x, y)} &=& (x - r_x)^2 \\
+D_2^{(x, y)} &=& (y - r_y)^2 \\
+D_3^{(x, y)} &=& (x - r_x) \\
+D_4^{(x, y)} &=& (y - r_y) 
+\end{eqnarray}$$</span><br>这里我们省略了 part的下标. <span>$(r_x, r_y)$</span>是第p个part通过聚类得到的anchor location.</p>
+<p>这一层的输出是一个 {% math p\times 1} 维的score vector.</p>
+<h3 id="visibility_reasoning_and_classification">visibility reasoning and classification</h3>
+<p>visibility reasoning请参照论文说明, 总之就是最后还会得到一层, 然后再做二分类 (如何准备正负样本?)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://bearpaw.github.io/blog/2015/04/05/Joint-Deep-Learning-for-Pedestrian-Detection/" data-id="5qpbuy3hkmzo4heg" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://bearpaw.github.io/blog/2015/04/05/Joint-Deep-Learning-for-Pedestrian-Detection/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Deformation-Layer/">Deformation Layer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Pedestrian-Detection/">Pedestrian Detection</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-latent-structural-svm" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blog/2015/04/03/latent-structural-svm/" class="article-date">
@@ -657,65 +739,6 @@
 
 
   
-    <article id="post-mixtures-of-parts" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blog/2015/01/26/mixtures-of-parts/" class="article-date">
-  <time datetime="2015-01-26T08:03:52.000Z" itemprop="datePublished">1月 26 2015</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blog/categories/论文笔记/">论文笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/01/26/mixtures-of-parts/">Articulated Pose Estimation with Flexible Mixtures of Parts</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <blockquote>
-<p>Yang, Yi, and Deva Ramanan. <em>“Articulated pose estimation with flexible mixtures-of-parts.”</em> CVPR 2011.</p>
-</blockquote>
-<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/pose-unconstrained.jpg" alt="图1. 无约束pose"></p>
-<h2 id="概述">概述</h2>
-<p>基于Part-based model的经典人体姿态估计算法.</p>
-<p>
-        
-          <p class="article-more-link">
-            <a href="/blog/2015/01/26/mixtures-of-parts/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://bearpaw.github.io/blog/2015/01/26/mixtures-of-parts/" data-id="oh9nwvhrihx3pguv" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://bearpaw.github.io/blog/2015/01/26/mixtures-of-parts/#ds-thread" class="article-comment-link">Comments</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/DPM/">DPM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/HOG/">HOG</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/blog/page/2/">2</a><a class="extend next" rel="next" href="/blog/page/2/">Next &raquo;</a>
@@ -729,7 +752,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/知识库/">知识库</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">4</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/知识库/">知识库</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">5</span></li></ul>
     </div>
   </div>
 
@@ -738,7 +761,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Caffe/">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deep-Learning/">Deep Learning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/classification/">classification</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/distance-transform/">distance transform</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/latent-ssvm/">latent ssvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/linear-regression/">linear regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/newton-method/">newton method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/optimization/">optimization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pose-estimation/">pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ssvm/">ssvm</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Caffe/">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deep-Learning/">Deep Learning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deformation-Layer/">Deformation Layer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Pedestrian-Detection/">Pedestrian Detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/classification/">classification</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/distance-transform/">distance transform</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/latent-ssvm/">latent ssvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/linear-regression/">linear regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/newton-method/">newton method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/optimization/">optimization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pose-estimation/">pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ssvm/">ssvm</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -747,7 +770,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/blog/tags/Caffe/" style="font-size: 10.00px;">Caffe</a><a href="/blog/tags/DPM/" style="font-size: 10.00px;">DPM</a><a href="/blog/tags/Deep-Learning/" style="font-size: 10.00px;">Deep Learning</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/Logistic-regression/" style="font-size: 10.00px;">Logistic regression</a><a href="/blog/tags/MCMC/" style="font-size: 10.00px;">MCMC</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 10.00px;">articulated pose estimation</a><a href="/blog/tags/classification/" style="font-size: 10.00px;">classification</a><a href="/blog/tags/distance-transform/" style="font-size: 10.00px;">distance transform</a><a href="/blog/tags/feature/" style="font-size: 10.00px;">feature</a><a href="/blog/tags/git/" style="font-size: 10.00px;">git</a><a href="/blog/tags/gradient-descent/" style="font-size: 20.00px;">gradient descent</a><a href="/blog/tags/hinge-loss/" style="font-size: 10.00px;">hinge loss</a><a href="/blog/tags/human-detection/" style="font-size: 10.00px;">human detection</a><a href="/blog/tags/latent-ssvm/" style="font-size: 10.00px;">latent ssvm</a><a href="/blog/tags/linear-regression/" style="font-size: 10.00px;">linear regression</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 10.00px;">mixtures of parts</a><a href="/blog/tags/newton-method/" style="font-size: 10.00px;">newton method</a><a href="/blog/tags/optimization/" style="font-size: 10.00px;">optimization</a><a href="/blog/tags/pictorial-model/" style="font-size: 10.00px;">pictorial model</a><a href="/blog/tags/pose-estimation/" style="font-size: 10.00px;">pose estimation</a><a href="/blog/tags/sampling/" style="font-size: 10.00px;">sampling</a><a href="/blog/tags/ssvm/" style="font-size: 10.00px;">ssvm</a>
+      <a href="/blog/tags/Caffe/" style="font-size: 10.00px;">Caffe</a><a href="/blog/tags/DPM/" style="font-size: 10.00px;">DPM</a><a href="/blog/tags/Deep-Learning/" style="font-size: 10.00px;">Deep Learning</a><a href="/blog/tags/Deformation-Layer/" style="font-size: 10.00px;">Deformation Layer</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/Logistic-regression/" style="font-size: 10.00px;">Logistic regression</a><a href="/blog/tags/MCMC/" style="font-size: 10.00px;">MCMC</a><a href="/blog/tags/Pedestrian-Detection/" style="font-size: 10.00px;">Pedestrian Detection</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 10.00px;">articulated pose estimation</a><a href="/blog/tags/classification/" style="font-size: 10.00px;">classification</a><a href="/blog/tags/distance-transform/" style="font-size: 10.00px;">distance transform</a><a href="/blog/tags/feature/" style="font-size: 10.00px;">feature</a><a href="/blog/tags/git/" style="font-size: 10.00px;">git</a><a href="/blog/tags/gradient-descent/" style="font-size: 20.00px;">gradient descent</a><a href="/blog/tags/hinge-loss/" style="font-size: 10.00px;">hinge loss</a><a href="/blog/tags/human-detection/" style="font-size: 10.00px;">human detection</a><a href="/blog/tags/latent-ssvm/" style="font-size: 10.00px;">latent ssvm</a><a href="/blog/tags/linear-regression/" style="font-size: 10.00px;">linear regression</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 10.00px;">mixtures of parts</a><a href="/blog/tags/newton-method/" style="font-size: 10.00px;">newton method</a><a href="/blog/tags/optimization/" style="font-size: 10.00px;">optimization</a><a href="/blog/tags/pictorial-model/" style="font-size: 10.00px;">pictorial model</a><a href="/blog/tags/pose-estimation/" style="font-size: 10.00px;">pose estimation</a><a href="/blog/tags/sampling/" style="font-size: 10.00px;">sampling</a><a href="/blog/tags/ssvm/" style="font-size: 10.00px;">ssvm</a>
     </div>
   </div>
 
@@ -756,7 +779,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/04/">April 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/03/">March 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/02/">February 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">4</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/04/">April 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/03/">March 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/02/">February 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -766,6 +789,10 @@
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/blog/2015/04/05/Joint-Deep-Learning-for-Pedestrian-Detection/">Joint Deep Learning for Pedestrian Detection</a>
+          </li>
         
           <li>
             <a href="/blog/2015/04/03/latent-structural-svm/">Latent Structural SVM</a>
@@ -781,10 +808,6 @@
         
           <li>
             <a href="/blog/2015/03/19/Articulated-Pose-Estimation-by-a-Graphical-Model-with-Image-Dependent-Pairwise-Relations/">Articulated Pose Estimation by a Graphical Model with Image Dependent Pairwise Relations</a>
-          </li>
-        
-          <li>
-            <a href="/blog/2015/02/09/Logistic-Regression/">Logistic Regression</a>
           </li>
         
       </ul>

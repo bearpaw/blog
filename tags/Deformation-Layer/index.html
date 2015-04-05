@@ -4,12 +4,12 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Archives: 2015/4 | Pumpkin</title>
+  <title>Tag: Deformation Layer | Pumpkin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Be grateful for each new day">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Pumpkin">
-<meta property="og:url" content="http://bearpaw.github.io/blog/blog/archives/2015/04/">
+<meta property="og:url" content="http://bearpaw.github.io/blog/blog/tags/Deformation-Layer/">
 <meta property="og:site_name" content="Pumpkin">
 <meta property="og:description" content="Be grateful for each new day">
 <meta name="twitter:card" content="summary">
@@ -162,152 +162,6 @@ D_4^{(x, y)} &=& (y - r_y)
 
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Deformation-Layer/">Deformation Layer</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Pedestrian-Detection/">Pedestrian Detection</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-latent-structural-svm" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blog/2015/04/03/latent-structural-svm/" class="article-date">
-  <time datetime="2015-04-03T05:31:12.000Z" itemprop="datePublished">4月 3 2015</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blog/categories/论文笔记/">论文笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/04/03/latent-structural-svm/">Latent Structural SVM</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      	  
-		<!-- 文章目录开始 -->
-		
-		<!-- 文章目录结束 -->
-        <blockquote>
-<p>Yu, Chun-Nam John, and Thorsten Joachims. “Learning structural SVMs with latent variables.” ICML, 2009.</p>
-</blockquote>
-<h2 id="Intuition">Intuition</h2>
-<p><strong>Structured Learning: </strong>传统判别式学习中, 训练样本由 <span>$\{x, y\}$</span> 构成，我们的目标是学习一个从输入到输出的映射<span>$f: x\rightarrow y$</span>. 以分类问题为例, <span>$y \in  \{1,2,3,⋯,N\}$</span> 是样本label. 但在有些问题中, 我们的输出可以是复杂的structured object, 比如parse tree, pose等等, 于是就出现了structured learning.</p>
-<p><strong>Latent structured learning: </strong>在结构化学习问题中, 有一些很有用的信息可能并未在训练数据 <span>$\{x, y\}$</span>中体现出来, 如human detection问题中, 输入$x$是图像, 输出$y$是人的bounding box, 而人体各个part的位置也是很有用的信息, 但是训练数据并未包含各个part的位置, 因此需要当作latent variable. 因此很有必要在学习模型时引入这些有用的latent variable的信息.</p>
-<h2 id="Model">Model</h2>
-<p>在下面问题中, 训练数据集为 <span>$S = \{(x_1, y_1), \cdots, (x_n, y_n)\} \in (X\times Y)^n$</span>.</p>
-<h3 id="SSVM">SSVM</h3>
-<p>SSVM希望学习到下列判别函数</p>
-<span>$$f_w(x) = \arg\max_{y\in Y} [w\cdot \Phi(x, y)]$$</span><br>其中 <span>$\Phi(x, y)$</span> 是表达了输入 $x$ 与输出 $y$ 之间的关系的joint feature vector. 求argmax的过程就是inference, 求解最优 $w$ 的过程就是learning.<br><br>SSVM通过在训练集上最小化risk来得到, risk定义为 <span>$\Delta (y, \hat{y})$</span>, 度量了预测结果 <span>$\hat{y}$</span> 与真实label $y$ 之间的差异. 通常情况下risk都是离散的, 非凸的, 不好优化, 因此可以找一个凸的上界, 通过最小化上界来最小化原来的risk, 这个上界可以表示为:<br><span>$$\Delta (y_i, \hat{y}_i(w)) \leq \max_{\hat{y}\in Y} [\Delta (y_i, \hat{y}) + w\cdot \Phi(x_i, \hat{y})] - w\cdot \Phi(x_i, y_i)$$</span><br>其中<br><span>$$\hat{y}_i(w) = \arg\max_{y\in Y} w\cdot \Phi(x_i, y) $$</span><br>直观理解为，max那一项是通过搜索找出最接近真实label的 <span>$\hat{y}$</span> 的得分；最后一项是真实label的真实得分 <a href="http://zhangliliang.com/2014/11/22/paper-note-latent-structural-svm/" target="_blank" rel="external">[引]</a>。<br><br>如果用SVM来formulate这个问题, 那么可以把上面定义的下届作为一个regularizer加到cost function里面, 这样就得到了下面的凸优化问题:<br><span>$$\min_w \frac{1}{2}\|w\|^2+C\sum_{i=1}^n \left[\max_{\hat{y}\in Y} [\Delta (y_i, \hat{y}) + w\cdot \Phi(x_i, \hat{y})] - w\cdot \Phi(x_i, y_i) \right]$$</span>
-
-<h3 id="Latent_SSVM">Latent SSVM</h3>
-<p>在intuition里面我们已经讨论过, 有时候输入和输出的关系不能完全由 x, y决定, 还和某个隐变量 <span>$h \in H$</span> 息息相关, joint feature 可以定义为 <span>$\Phi(x, y, h)$</span>, 这样判别函数也就变成了</p>
-<span>$$f_w(x) = \arg\max_{(y, h) \in Y\times H} [w\cdot \Phi(x, y, h)]$$</span><br>类似SSVM, 我们也需要定义risk. 但是注意在现实问题中, 隐变量并不是输出 (比如DPM中, part只是中间步骤用的, 最终得到的还是整体的bbox), 因此risk不应该depend on隐变量. 这种考虑不仅更贴合实际, 而且简化了risk计算, 用数学公式可以表达如下:<br><span>$$\Delta ((y_i, h^*_i(w), (\hat{y}_i(w), \hat{h}_i(w)) = \Delta (y_i,\hat{y}_i(w), \hat{h}_i(w))$$</span><br>其中 <span>$h^*_i(w)$</span> 是”最优的”能描述x与y关系的隐变量. 基于此, risk的上界为:<br><span>$$\Delta ((y_i, h^*_i(w), (\hat{y}_i(w), \hat{h}_i(w)) \leq \left(\max_{\hat{y}, \hat{h}\in Y\times H} [\Delta (y_i, \hat{y}, \hat{h}) + w\cdot \Phi(x_i, \hat{y}, \hat{h})]\right) - \left(\max_{h\in H}w\cdot \Phi(x_i, y_i, h)\right)$$</span><br>定义好上界后, 同SSVM一样, 可以formulate成带正则项的SVM<br><span>$$\min_w \frac{1}{2}\|w\|^2+C\sum_{i=1}^n \left(\max_{\hat{y}, \hat{h}\in Y\times H} [\Delta (y_i, \hat{y}, \hat{h}) + w\cdot \Phi(x_i, \hat{y}, \hat{h})]\right) -  C\sum_{i=1}^n \left(\max_{h\in H}w\cdot \Phi(x_i, y_i, h)\right)$$</span>
-
-<h2 id="Learning">Learning</h2>
-<p>LSSVM的目标函数是两个convex function的差, 也就可以理解为convex + concave, 因此可以用Concave-Convex Procedure (<a href="http://www.stat.ucla.edu/~yuille/pubs/optimize_papers/cccp_nips01.pdf" target="_blank" rel="external">Yuille &amp; Rangarajan, 2003</a>)求解.</p>
-<h3 id="CCCP">CCCP</h3>
-<p>CCCP解决的是最小化两个convex function $f(w), g(w)$ 的差的算法</p>
-<span>$$\min_w f(w) + (-g(w)).$$</span><br><img alt="CCCP" src="http://7u2pi6.com1.z0.glb.clouddn.com/cccp.png" width="440px"><br><br>首先, 第3行先找到一个超平面 <span>$v_t$</span>, 使得右边是 $-g(w)$ 的一个上界 , 然后最小化 $f(w) + Upperbound$ 来更新参数. CCCP能保证收敛.<br><br><h3> CCCP迭代求解LSSVM </h3><br><strong>Step 1: </strong>观察lssvm的目标函数, 我们先要找concave part的上界. 首先fix参数 <span>$w_t$</span>, 求解最优的 <span>$h^*$</span>,<br><span>$$h^* = \arg\max_{h\in H}w\cdot \Phi(x_i, y_i, h)$$</span><br>这样定义上界的超平面  <span>$v_t$</span> 为:<br><span>$$v_t = \Phi(x_i, y_i, h^*)$$</span>
-
-<p><strong>Step 2: </strong> fix <span>$v_t$</span> , 更新模型参数 <span>$w_{t+1}$</span></p>
-<p><span>$$\min_w \frac{1}{2}\|w\|^2+C\sum_{i=1}^n \max_{\hat{y}, \hat{h}\in Y\times H} [\Delta (y_i, \hat{y}, \hat{h}) + w\cdot \Phi(x_i, \hat{y}, \hat{h})] -  C\sum_{i=1}^n\max_{h\in H}w\cdot \Phi(x_i, y_i, h^*_i)$$</span><br>这一步用ssvm的求解方法解就好了.</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://bearpaw.github.io/blog/2015/04/03/latent-structural-svm/" data-id="ra7uz13076k7ndfc" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://bearpaw.github.io/blog/2015/04/03/latent-structural-svm/#ds-thread" class="article-comment-link">Comments</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/latent-ssvm/">latent ssvm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/ssvm/">ssvm</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Generalized-Distance-Transform" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blog/2015/04/01/Generalized-Distance-Transform/" class="article-date">
-  <time datetime="2015-04-01T12:46:50.000Z" itemprop="datePublished">4月 1 2015</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blog/categories/知识库/">知识库</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/04/01/Generalized-Distance-Transform/">Generalized Distance Transform</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      	  
-		<!-- 文章目录开始 -->
-		
-		<!-- 文章目录结束 -->
-        <p>距离变换于1966年被学者首次提出,目前已被广泛应用于图像分析、计算机视觉、模式识别等领域，人们利用它来实现目标细化、骨架提取、形状插值及匹配、粘连物体的分离等。距离变换是针对二值图像的一种变换。在二维空间中，一幅二值图像可以认为仅仅包含目标和背景两种像素，目标的像素值为1，背景的像素值为0；距离变换的结果不是另一幅二值图像，而是一幅灰度级图像，即距离图像，图像中每个像素的灰度值为该像素与距其最近的背景像素间的距离, 如下图所示。<a href="http://blog.csdn.net/carson2005/article/details/21617897" target="_blank" rel="external">[参考: 距离变换]</a></p>
-<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/@/blog/dt.png" alt="Distance Transform"></p>
-<h2 id="传统距离变换">传统距离变换</h2>
-<p>传统DT定义在grid的点上. 给定grid $G$, 令 $x, y$ 是 $G$ 上的两个点, 并且定义距离度量 $d(x, y)$. 给定一个集合 <span>$B \subseteq G$</span>, 那么 $B$ 在 $G$ 上的距离变换 <span>$D_B(x)$</span> 就定义为<strong>$G$ 上的每个点到 $B$ 的最近距离</strong>:</p>
-<span>$$D_B(x) = \min_{y\in B} d(x, y).$$</span>
-
-<p>如果我们在 $G$ 上定义一个 indicator function <span>$\mathbf{1}_B(y)$</span>:</p>
-<span>$$\mathbf{1}_B(y) :=
-	\begin{cases} 
-	0 &\text{if } y \in B, \\
-	\infty &\text{if } y \notin B.
-	\end{cases}$$</span><br>那么DT可以重新formulate为下列形式:<br><span>$$D_B(x) = \min_{y\in G} (d(x, y) + \mathbf{1}_B(y)).$$</span><br>这和本文开篇的例子是一致的.<br><br><h3> Generalized 距离变换 </h3><br>上一节定义的 <span>$\mathbf{1}_B(y)$</span> 是一个定义在 $G$ 上的二值函数, 假设我们将其替换成定义在 $G$ 上的任意函数 $f(y)$, 就得到了generalized DT:<br><span>$$D_f(x) = \min_{y\in G} (d(x, y) + f(y)).$$</span>
-
-<p>假设 $G$ 上共有 $k$ 个点, 那么对每一个 $G$ 上的点, 都需要将所有点扫描一次, 因此算法复杂度是 $O(k^2)$. 从上面式子可以看出, DT 直观上是对 $x$ 找到对应的 $y$, 使得 $x, y$ 之间的距离尽可能小, 同时函数值 $f(y)$ 也要小.</p>
-<h3 id="参考">参考</h3>
-<ol>
-<li><a href="http://blog.csdn.net/abcjennifer/article/details/7617883" target="_blank" rel="external">距离变换 (Rachel Zhang的专栏)</a></li>
-<li>Pictorial Structures for Object Recognition. Felzenszwalb, Pedro F., and Daniel P. Huttenlocher. IJCV (2005).</li>
-<li>An example on using the distance transform can be found at <code>opencv_source_code/samples/cpp/distrans.cpp</code></li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://bearpaw.github.io/blog/2015/04/01/Generalized-Distance-Transform/" data-id="28fyqckfgt5w5fap" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://bearpaw.github.io/blog/2015/04/01/Generalized-Distance-Transform/#ds-thread" class="article-comment-link">Comments</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/distance-transform/">distance transform</a></li></ul>
 
     </footer>
   </div>
