@@ -88,6 +88,65 @@
     <div class="outer">
       <section id="main">
   
+    <article id="post-Using-LaTeX-in-Adobe-Illustrator" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2015/04/21/Using-LaTeX-in-Adobe-Illustrator/" class="article-date">
+  <time datetime="2015-04-21T07:27:05.000Z" itemprop="datePublished">4月 21 2015</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/工具/">工具</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2015/04/21/Using-LaTeX-in-Adobe-Illustrator/">在 Adobe Illustrator 中使用 LaTeX 公式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      	  
+		<!-- 文章目录开始 -->
+		
+		<!-- 文章目录结束 -->
+        <p>在Windows下做论文图, Adobe Illustrator很强大美腻. 但是公式的输入就很蛋疼了. 就算你生成了公式的PDF/eps文件, 导入到AI之后字体面目全非了有没有. 好在终于发现了一个<a href="http://www.latex-community.org/know-how/latexs-friends/61-latexs-friends-others/381-combining-latex-and-illustrator" target="_blank" rel="external">好办法</a>, 其实原理就在于要手动安装latex公式用到的amsfonts, 然后还提供了一个简单的AI脚本, 能够方便的在AI中输入公式, 用pdflatex渲染成PDF, 然后再从PDF中导入公式到AI中.</p>
+<h2 id="安装字体">安装字体</h2>
+<p>首先找到amsfonts windows版本字体的路径:<br><code>MiKTeX 2.8\fonts\type1\public\amsfonts\cm</code><br>在这个文件夹下面的<code>*.pfm</code>文件就是我们需要安装的字体. 把所有的<code>*.pfm</code>文件拖到<code>C:\WINDOWS\Fonts</code>文件夹下即可.</p>
+<h2 id="安装脚本">安装脚本</h2>
+<p>在AI的安装目录下<br><code>Adobe\Illustrator CS\Presets\Scripts</code><br>创建文件 <code>LaTeX.js</code>, 里面的内容如下:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> pdflatexexe=<span class="string">"pdflatex.exe"</span>;  <span class="comment">// Add full path if necessary</span></div><div class="line"></div><div class="line"><span class="comment">// determining the local temporary directory</span></div><div class="line"><span class="keyword">var</span> temppath=Folder.temp.fsName;  <span class="comment">// path already in Windows syntax: c:\...</span></div><div class="line"><span class="keyword">var</span> i=temppath.indexOf(<span class="string">"Temporary Internet Files"</span>);</div><div class="line"><span class="keyword">if</span>(i&gt;=<span class="number">0</span>) temppath=temppath.substr(<span class="number">0</span>,i+<span class="number">4</span>);</div><div class="line"><span class="comment">//temppath should now contain something like C:\Documents and Settings\&lt;user&gt;\Local Settings\Temp</span></div><div class="line"></div><div class="line"><span class="comment">// remember the last user input in a text file</span></div><div class="line"><span class="keyword">var</span> lastcode=<span class="string">"$$"</span></div><div class="line"><span class="keyword">var</span> lastcodefile=File(temppath+<span class="string">"\\latex2illustrator_lastcode.txt"</span>);</div><div class="line"><span class="keyword">if</span>(lastcodefile.exists)</div><div class="line">  {</div><div class="line">  lastcodefile.open(<span class="string">"r"</span>);</div><div class="line">  lastcode=lastcodefile.read();</div><div class="line">  lastcodefile.close();</div><div class="line">  }</div><div class="line"></div><div class="line"><span class="comment">// prompt for user input</span></div><div class="line"><span class="keyword">var</span> latexcode=prompt(<span class="string">"Please enter LaTeX code"</span>,lastcode,<span class="string">"LaTeX"</span>);</div><div class="line"><span class="keyword">if</span>(latexcode!=<span class="literal">null</span>)</div><div class="line">  {</div><div class="line">  lastcodefile.open(<span class="string">"w"</span>);</div><div class="line">  lastcodefile.write(latexcode);</div><div class="line">  lastcodefile.close();</div><div class="line"></div><div class="line">  <span class="comment">// add latex header etc. to create a complete latex document</span></div><div class="line">  <span class="keyword">var</span> latexfile=<span class="keyword">new</span> File(temppath+<span class="string">'\\latex2illustrator.tex'</span>);</div><div class="line">  latexfile.open(<span class="string">"w"</span>);</div><div class="line">  latexfile.writeln(<span class="string">"\\documentclass[11pt]{article}"</span>);</div><div class="line">  <span class="comment">// add or remove additional latex packages here</span></div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{amsmath}"</span>);</div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{amssymb}"</span>);</div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{gensymb}"</span>);   <span class="comment">// for \degree</span></div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{textcomp}"</span>);  <span class="comment">// for \textdegree</span></div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{bm}"</span>);        <span class="comment">// bold math</span></div><div class="line">  latexfile.writeln(<span class="string">"\\begin{document}"</span>);</div><div class="line">  latexfile.writeln(<span class="string">"\\pagestyle{empty}"</span>); <span class="comment">// no page number</span></div><div class="line">  latexfile.writeln(latexcode);</div><div class="line">  latexfile.writeln(<span class="string">"\\end{document}"</span>);</div><div class="line">  latexfile.close();</div><div class="line"></div><div class="line">  <span class="keyword">var</span> pdffile=File(temppath+<span class="string">"\\latex2illustrator.pdf"</span>);</div><div class="line">  <span class="keyword">if</span>(pdffile.exists)</div><div class="line">     pdffile.remove();</div><div class="line"></div><div class="line">  <span class="comment">// create a batch file calling latex</span></div><div class="line">  <span class="keyword">var</span> batchfile=<span class="keyword">new</span> File(temppath+<span class="string">'\\latex2illustrator.bat'</span>);</div><div class="line">  batchfile.open(<span class="string">"w"</span>);</div><div class="line">  batchfile.writeln(pdflatexexe+<span class="string">' -aux-directory="'</span>+temppath+<span class="string">'" -include-directory="'</span>+temppath+<span class="string">'" -output-directory="'</span>+temppath+<span class="string">'" "'</span>+temppath+<span class="string">'\\latex2illustrator.tex"'</span>);</div><div class="line">  <span class="comment">//batchfile.writeln('pause');</span></div><div class="line">  batchfile.writeln(<span class="string">'del "'</span>+temppath+<span class="string">'\\latex2illustrator.bat"'</span>);</div><div class="line">  batchfile.close();</div><div class="line">  batchfile.execute();</div><div class="line"></div><div class="line">  <span class="keyword">for</span>(; batchfile.exists; )</div><div class="line">  <span class="comment">// wait until the batch file has removed itself</span></div><div class="line"></div><div class="line">  <span class="keyword">var</span> pdffile=File(temppath+<span class="string">"\\latex2illustrator.pdf"</span>);</div><div class="line">  <span class="keyword">if</span>(pdffile.exists)</div><div class="line">    {</div><div class="line">    <span class="comment">// import pdf file into the current document</span></div><div class="line">    <span class="keyword">var</span> grp=app.activeDocument.activeLayer.groupItems.createFromFile(pdffile);</div><div class="line">    <span class="comment">// The imported objects are grouped twice. Now move the subgroup</span></div><div class="line">    <span class="comment">// items to the main group and skip the last item which is the page frame</span></div><div class="line">	<span class="keyword">for</span>( <span class="keyword">var</span> i=grp.pageItems[<span class="number">0</span>].pageItems.length-<span class="number">1</span>; --i&gt;=<span class="number">0</span>; )</div><div class="line">     grp.pageItems[<span class="number">0</span>].pageItems[i].move(grp,ElementPlacement.PLACEATEND);</div><div class="line">    grp.pageItems[<span class="number">0</span>].remove();</div><div class="line">    <span class="comment">// Move the imported objects to the center of the current view.</span></div><div class="line">    grp.translate(app.activeDocument.activeView.centerPoint[<span class="number">0</span>]-grp.left, app.activeDocument.activeView.centerPoint[<span class="number">1</span>]-grp.top);</div><div class="line">    }</div><div class="line">  <span class="keyword">else</span></div><div class="line">    alert(<span class="string">"File "</span>+temppath+<span class="string">"\\"</span>+pdffile.name+<span class="string">" could not be created. LaTeX error?"</span>);</div><div class="line">  }</div></pre></td></tr></table></figure>
+
+<p>然后重新打开AI, 点击 <code>文件-&gt;脚本-&gt;LaTeX</code> 就可以输入公式了有没有.    </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://bearpaw.github.io/blog/2015/04/21/Using-LaTeX-in-Adobe-Illustrator/" data-id="bl50ff7wuq2dho9j" class="article-share-link" data-share="baidu">分享到</a>
+      
+
+      
+        <a href="http://bearpaw.github.io/blog/2015/04/21/Using-LaTeX-in-Adobe-Illustrator/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Illustrator/">Illustrator</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/LaTeX/">LaTeX</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Parsing-Occluded-People-by-Flexible-Compositions" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/blog/2015/04/16/Parsing-Occluded-People-by-Flexible-Compositions/" class="article-date">
@@ -136,7 +195,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/04/16/Parsing-Occluded-People-by-Flexible-Compositions/" data-id="k3ngefxz9ujr435b" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/2015/04/16/Parsing-Occluded-People-by-Flexible-Compositions/" data-id="92hgxqrhae5cgbp6" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -218,7 +277,7 @@ D_4^{(x, y)} &=& (y - r_y)
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/04/05/Joint-Deep-Learning-for-Pedestrian-Detection/" data-id="u39u9sy39zy6kgz6" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/2015/04/05/Joint-Deep-Learning-for-Pedestrian-Detection/" data-id="jj7w1w4ibl6mrqa0" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -293,7 +352,7 @@ D_4^{(x, y)} &=& (y - r_y)
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/04/03/latent-structural-svm/" data-id="5h9lrifvcq8ow0t5" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/2015/04/03/latent-structural-svm/" data-id="6nttlbawll0d7rwl" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -364,7 +423,7 @@ D_4^{(x, y)} &=& (y - r_y)
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/04/01/Generalized-Distance-Transform/" data-id="uwh8t7tdxmvs5ml2" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/2015/04/01/Generalized-Distance-Transform/" data-id="n50s94t4e2l8470y" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -418,7 +477,7 @@ D_4^{(x, y)} &=& (y - r_y)
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/03/25/Git-in-a-Nutshell/" data-id="vvhccp5bu8025jac" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/2015/03/25/Git-in-a-Nutshell/" data-id="yzx0t3wnr4qgx87t" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -475,7 +534,7 @@ D_4^{(x, y)} &=& (y - r_y)
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/03/19/Articulated-Pose-Estimation-by-a-Graphical-Model-with-Image-Dependent-Pairwise-Relations/" data-id="i0x38wnv0z5v0qdr" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/2015/03/19/Articulated-Pose-Estimation-by-a-Graphical-Model-with-Image-Dependent-Pairwise-Relations/" data-id="hsyy2fnkj09xqd2s" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -530,7 +589,7 @@ D_4^{(x, y)} &=& (y - r_y)
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/02/09/Logistic-Regression/" data-id="a5ddy63u4rzgdp65" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/2015/02/09/Logistic-Regression/" data-id="hedti32v9q6j36cv" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -586,7 +645,7 @@ D_4^{(x, y)} &=& (y - r_y)
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/02/06/Linear-Regression/" data-id="j4y5qbitz1o82f4j" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/2015/02/06/Linear-Regression/" data-id="ji6g54pakw6rbm30" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -649,7 +708,7 @@ D_4^{(x, y)} &=& (y - r_y)
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/02/05/hinge-loss/" data-id="57edj48xl5njovlm" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/2015/02/05/hinge-loss/" data-id="baf5oh9zqpa58op3" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
@@ -658,63 +717,6 @@ D_4^{(x, y)} &=& (y - r_y)
 
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Network" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blog/2015/01/29/Network/" class="article-date">
-  <time datetime="2015-01-29T07:52:37.000Z" itemprop="datePublished">1月 29 2015</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blog/categories/工具/">工具</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/01/29/Network/">Caffe 将全连接网络转化为全卷积网络</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>当我们用Caffe训练好一个网络，希望用其进行测试时，我们会写一个deploy.prototxt, 以CaffeNet为例，该文件的前几行是这样的：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">name</span>: <span class="string">"CaffeNet"</span></div><div class="line"><span class="attribute">input</span>: <span class="string">"data"</span></div><div class="line"><span class="attribute">input_dim</span>: <span class="string">10</span></div><div class="line"><span class="attribute">input_dim</span>: <span class="string">3</span></div><div class="line"><span class="attribute">input_dim</span>: <span class="string">227</span></div><div class="line"><span class="attribute">input_dim</span>: <span class="string">227</span></div></pre></td></tr></table></figure>
-
-<p>其中前两行分别是网络的名称，输入层blob的名字， 以及数据维度(n, c, h, w). 这样我们就能对大小与训练数据大小一致的图像进行分类。然而有时候我们希望对不同大小的图像进行测试，如果以这些图像进行输入，那么在卷积层结束进入全连接（Fully Connected, FC）层时，程序会发现FC层的输入和训练时的输入不一致，导致程序崩溃。一个处理方法是将输入图像resize到标准大小，然后这样可能会导致图像失真，因此有时我们需要将网络转化为全卷积网络。</p>
-<p>
-        
-          <p class="article-more-link">
-            <a href="/blog/2015/01/29/Network/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://bearpaw.github.io/blog/2015/01/29/Network/" data-id="v38w1dmbewbwvuzl" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://bearpaw.github.io/blog/2015/01/29/Network/#ds-thread" class="article-comment-link">Comments</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Caffe/">Caffe</a></li></ul>
 
     </footer>
   </div>
@@ -736,7 +738,7 @@ D_4^{(x, y)} &=& (y - r_y)
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/知识库/">知识库</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">6</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/工具/">工具</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/机器学习/">机器学习</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/知识库/">知识库</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/论文笔记/">论文笔记</a><span class="category-list-count">6</span></li></ul>
     </div>
   </div>
 
@@ -745,7 +747,7 @@ D_4^{(x, y)} &=& (y - r_y)
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Caffe/">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deep-Learning/">Deep Learning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deformation-Layer/">Deformation Layer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Pedestrian-Detection/">Pedestrian Detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/classification/">classification</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/distance-transform/">distance transform</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/latent-ssvm/">latent ssvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/linear-regression/">linear regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/newton-method/">newton method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/optimization/">optimization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pose-estimation/">pose estimation</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ssvm/">ssvm</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Caffe/">Caffe</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/DPM/">DPM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deep-Learning/">Deep Learning</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Deformation-Layer/">Deformation Layer</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/HOG/">HOG</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Illustrator/">Illustrator</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/LaTeX/">LaTeX</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/MCMC/">MCMC</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/Pedestrian-Detection/">Pedestrian Detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/articulated-pose-estimation/">articulated pose estimation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/classification/">classification</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/distance-transform/">distance transform</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/feature/">feature</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/human-detection/">human detection</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/latent-ssvm/">latent ssvm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/linear-regression/">linear regression</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/mixtures-of-parts/">mixtures of parts</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/newton-method/">newton method</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/optimization/">optimization</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pictorial-model/">pictorial model</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/pose-estimation/">pose estimation</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/sampling/">sampling</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/ssvm/">ssvm</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -754,7 +756,7 @@ D_4^{(x, y)} &=& (y - r_y)
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/blog/tags/Caffe/" style="font-size: 10.00px;">Caffe</a><a href="/blog/tags/DPM/" style="font-size: 10.00px;">DPM</a><a href="/blog/tags/Deep-Learning/" style="font-size: 10.00px;">Deep Learning</a><a href="/blog/tags/Deformation-Layer/" style="font-size: 10.00px;">Deformation Layer</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/Logistic-regression/" style="font-size: 10.00px;">Logistic regression</a><a href="/blog/tags/MCMC/" style="font-size: 10.00px;">MCMC</a><a href="/blog/tags/Pedestrian-Detection/" style="font-size: 10.00px;">Pedestrian Detection</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 10.00px;">articulated pose estimation</a><a href="/blog/tags/classification/" style="font-size: 10.00px;">classification</a><a href="/blog/tags/distance-transform/" style="font-size: 10.00px;">distance transform</a><a href="/blog/tags/feature/" style="font-size: 10.00px;">feature</a><a href="/blog/tags/git/" style="font-size: 10.00px;">git</a><a href="/blog/tags/gradient-descent/" style="font-size: 20.00px;">gradient descent</a><a href="/blog/tags/hinge-loss/" style="font-size: 10.00px;">hinge loss</a><a href="/blog/tags/human-detection/" style="font-size: 10.00px;">human detection</a><a href="/blog/tags/latent-ssvm/" style="font-size: 10.00px;">latent ssvm</a><a href="/blog/tags/linear-regression/" style="font-size: 10.00px;">linear regression</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 10.00px;">mixtures of parts</a><a href="/blog/tags/newton-method/" style="font-size: 10.00px;">newton method</a><a href="/blog/tags/optimization/" style="font-size: 10.00px;">optimization</a><a href="/blog/tags/pictorial-model/" style="font-size: 10.00px;">pictorial model</a><a href="/blog/tags/pose-estimation/" style="font-size: 20.00px;">pose estimation</a><a href="/blog/tags/sampling/" style="font-size: 10.00px;">sampling</a><a href="/blog/tags/ssvm/" style="font-size: 10.00px;">ssvm</a>
+      <a href="/blog/tags/Caffe/" style="font-size: 10.00px;">Caffe</a><a href="/blog/tags/DPM/" style="font-size: 10.00px;">DPM</a><a href="/blog/tags/Deep-Learning/" style="font-size: 10.00px;">Deep Learning</a><a href="/blog/tags/Deformation-Layer/" style="font-size: 10.00px;">Deformation Layer</a><a href="/blog/tags/HOG/" style="font-size: 20.00px;">HOG</a><a href="/blog/tags/Illustrator/" style="font-size: 10.00px;">Illustrator</a><a href="/blog/tags/LaTeX/" style="font-size: 10.00px;">LaTeX</a><a href="/blog/tags/Logistic-regression/" style="font-size: 10.00px;">Logistic regression</a><a href="/blog/tags/MCMC/" style="font-size: 10.00px;">MCMC</a><a href="/blog/tags/Pedestrian-Detection/" style="font-size: 10.00px;">Pedestrian Detection</a><a href="/blog/tags/articulated-pose-estimation/" style="font-size: 10.00px;">articulated pose estimation</a><a href="/blog/tags/classification/" style="font-size: 10.00px;">classification</a><a href="/blog/tags/distance-transform/" style="font-size: 10.00px;">distance transform</a><a href="/blog/tags/feature/" style="font-size: 10.00px;">feature</a><a href="/blog/tags/git/" style="font-size: 10.00px;">git</a><a href="/blog/tags/gradient-descent/" style="font-size: 20.00px;">gradient descent</a><a href="/blog/tags/hinge-loss/" style="font-size: 10.00px;">hinge loss</a><a href="/blog/tags/human-detection/" style="font-size: 10.00px;">human detection</a><a href="/blog/tags/latent-ssvm/" style="font-size: 10.00px;">latent ssvm</a><a href="/blog/tags/linear-regression/" style="font-size: 10.00px;">linear regression</a><a href="/blog/tags/mixtures-of-parts/" style="font-size: 10.00px;">mixtures of parts</a><a href="/blog/tags/newton-method/" style="font-size: 10.00px;">newton method</a><a href="/blog/tags/optimization/" style="font-size: 10.00px;">optimization</a><a href="/blog/tags/pictorial-model/" style="font-size: 10.00px;">pictorial model</a><a href="/blog/tags/pose-estimation/" style="font-size: 20.00px;">pose estimation</a><a href="/blog/tags/sampling/" style="font-size: 10.00px;">sampling</a><a href="/blog/tags/ssvm/" style="font-size: 10.00px;">ssvm</a>
     </div>
   </div>
 
@@ -763,7 +765,7 @@ D_4^{(x, y)} &=& (y - r_y)
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/04/">April 2015</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/03/">March 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/02/">February 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">4</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/04/">April 2015</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/03/">March 2015</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/02/">February 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2015/01/">January 2015</a><span class="archive-list-count">4</span></li></ul>
     </div>
   </div>
 
@@ -773,6 +775,10 @@ D_4^{(x, y)} &=& (y - r_y)
     <h3 class="widget-title">近期文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/blog/2015/04/21/Using-LaTeX-in-Adobe-Illustrator/">在 Adobe Illustrator 中使用 LaTeX 公式</a>
+          </li>
         
           <li>
             <a href="/blog/2015/04/16/Parsing-Occluded-People-by-Flexible-Compositions/">Parsing Occluded People by Flexible Compositions</a>
@@ -788,10 +794,6 @@ D_4^{(x, y)} &=& (y - r_y)
         
           <li>
             <a href="/blog/2015/04/01/Generalized-Distance-Transform/">Generalized Distance Transform</a>
-          </li>
-        
-          <li>
-            <a href="/blog/2015/03/25/Git-in-a-Nutshell/">Git in a Nutshell</a>
           </li>
         
       </ul>

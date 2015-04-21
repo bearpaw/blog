@@ -4,17 +4,17 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Archives: 2015/2 | Pumpkin</title>
+  <title>在 Adobe Illustrator 中使用 LaTeX 公式 | Pumpkin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Be grateful for each new day">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Pumpkin">
-<meta property="og:url" content="http://bearpaw.github.io/blog/blog/archives/2015/02/">
+  <meta name="description" content="在Windows下做论文图, Adobe Illustrator很强大美腻. 但是公式的输入就很蛋疼了. 就算你生成了公式的PDF/eps文件, 导入到AI之后字体面目全非了有没有. 好在终于发现了一个好办法, 其实原理就在于要手动安装latex公式用到的amsfonts, 然后还提供了一个简单的AI脚本, 能够方便的在AI中输入公式, 用pdflatex渲染成PDF, 然后再从PDF中导入公式到">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在 Adobe Illustrator 中使用 LaTeX 公式">
+<meta property="og:url" content="http://bearpaw.github.io/blog/blog/2015/04/21/Using-LaTeX-in-Adobe-Illustrator/">
 <meta property="og:site_name" content="Pumpkin">
-<meta property="og:description" content="Be grateful for each new day">
+<meta property="og:description" content="在Windows下做论文图, Adobe Illustrator很强大美腻. 但是公式的输入就很蛋疼了. 就算你生成了公式的PDF/eps文件, 导入到AI之后字体面目全非了有没有. 好在终于发现了一个好办法, 其实原理就在于要手动安装latex公式用到的amsfonts, 然后还提供了一个简单的AI脚本, 能够方便的在AI中输入公式, 用pdflatex渲染成PDF, 然后再从PDF中导入公式到">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Pumpkin">
-<meta name="twitter:description" content="Be grateful for each new day">
+<meta name="twitter:title" content="在 Adobe Illustrator 中使用 LaTeX 公式">
+<meta name="twitter:description" content="在Windows下做论文图, Adobe Illustrator很强大美腻. 但是公式的输入就很蛋疼了. 就算你生成了公式的PDF/eps文件, 导入到AI之后字体面目全非了有没有. 好在终于发现了一个好办法, 其实原理就在于要手动安装latex公式用到的amsfonts, 然后还提供了一个简单的AI脚本, 能够方便的在AI中输入公式, 用pdflatex渲染成PDF, 然后再从PDF中导入公式到">
 <link rel="publisher" href="https://plus.google.com/u/0/+WeiYangplatero">
 
   
@@ -86,16 +86,14 @@
   </div>
 </header>
     <div class="outer">
-      <section id="main">
-  
-    <article id="post-Logistic-Regression" class="article article-type-post" itemscope itemprop="blogPost">
+      <section id="main"><article id="post-Using-LaTeX-in-Adobe-Illustrator" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/blog/2015/02/09/Logistic-Regression/" class="article-date">
-  <time datetime="2015-02-09T01:26:01.000Z" itemprop="datePublished">2月 9 2015</time>
+    <a href="/blog/2015/04/21/Using-LaTeX-in-Adobe-Illustrator/" class="article-date">
+  <time datetime="2015-04-21T07:27:05.000Z" itemprop="datePublished">4月 21 2015</time>
 </a>
     
   <div class="article-category">
-    <a class="article-category-link" href="/blog/categories/知识库/">知识库</a>
+    <a class="article-category-link" href="/blog/categories/工具/">工具</a>
   </div>
 
   </div>
@@ -105,119 +103,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/02/09/Logistic-Regression/">Logistic Regression</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Logistic Regression (以下简称LR)解决的是分类问题. 考虑两类分类问题, 如判断邮件是否是垃圾邮件, 或肿瘤是否为恶性肿瘤, 样本标签只有两类: 0表示negtive, 1表示positive. 考虑用之前讨论过的Linear regression来解决这个问题, 如图1所示, 当样本分布理想时, 可以通过设定阈值来对样本进行分类 (绿色); 但是当样本分布不理想时, 拟合出来的linear function偏差比较大, 设定阈值的方法不能获得理想的分类结果 (蓝色). Linear regression的另一个问题是其给出的预测范围是 $h(x) \in (-\infty, \infty)$, 而分类问题的标签就两个$\{0, 1\}$, 其理想的predict function应该是 $h(x) \in [0, 1]$, 所以linear regression也不适合分类问题.</p>
-<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/linear-regression-for-classification.png" alt="图1. 用linear regression模型解决分类问题"></p>
-<p>
-        
-          <p class="article-more-link">
-            <a href="/blog/2015/02/09/Logistic-Regression/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://bearpaw.github.io/blog/2015/02/09/Logistic-Regression/" data-id="hedti32v9q6j36cv" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://bearpaw.github.io/blog/2015/02/09/Logistic-Regression/#ds-thread" class="article-comment-link">Comments</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Logistic-regression/">Logistic regression</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/classification/">classification</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/newton-method/">newton method</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/optimization/">optimization</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Linear-Regression" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blog/2015/02/06/Linear-Regression/" class="article-date">
-  <time datetime="2015-02-06T05:48:00.000Z" itemprop="datePublished">2月 6 2015</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blog/categories/知识库/">知识库</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/02/06/Linear-Regression/">Linear Regression</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Linear_regression.svg/438px-Linear_regression.svg.png" alt="图1. Linear regression"></p>
-<h2 id="引子">引子</h2>
-<p>如图1所示, 我们以一个不够恰当的例子来引入线性回归的问题: 假设横轴表示焦虑程度, 纵轴表示抽烟的根数, 蓝点表示历史数据. 我们想要了解这样的问题: 假设今天我的焦虑程度为31, 能否根据历史数据预测我今天的抽烟根数?</p>
-
-        
-          <p class="article-more-link">
-            <a href="/blog/2015/02/06/Linear-Regression/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://bearpaw.github.io/blog/2015/02/06/Linear-Regression/" data-id="ji6g54pakw6rbm30" class="article-share-link" data-share="baidu">分享到</a>
-      
-
-      
-        <a href="http://bearpaw.github.io/blog/2015/02/06/Linear-Regression/#ds-thread" class="article-comment-link">Comments</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/gradient-descent/">gradient descent</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/linear-regression/">linear regression</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-hinge-loss" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/blog/2015/02/05/hinge-loss/" class="article-date">
-  <time datetime="2015-02-05T07:32:14.000Z" itemprop="datePublished">2月 5 2015</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/blog/categories/知识库/">知识库</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/blog/2015/02/05/hinge-loss/">Hinge Loss</a>
+    <h1 class="article-title" itemprop="name">
+      在 Adobe Illustrator 中使用 LaTeX 公式
     </h1>
   
 
@@ -227,42 +114,56 @@
       	  
 		<!-- 文章目录开始 -->
 		
+			<div id="toc" class="toc-article">
+				<strong class="toc-title">文章目录</strong>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装字体"><span class="toc-number">1.</span> <span class="toc-text">安装字体</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装脚本"><span class="toc-number">2.</span> <span class="toc-text">安装脚本</span></a></li></ol>
+			</div>
+		
 		<!-- 文章目录结束 -->
-        <h2 id="概述">概述</h2>
-<p>Hinge loss是广泛应用于分类问题中的loss function。假设样本的真实标签为$t=\pm 1$,  分类器对样本的打分为$y$. 注意这里$y$是实数, 而不是样本标签$\pm 1$. Hinge loss定义如下:</p>
-<span>$$L_{hinge}(y) = \max(0, 1-t\cdot y). $$</span>
+        <p>在Windows下做论文图, Adobe Illustrator很强大美腻. 但是公式的输入就很蛋疼了. 就算你生成了公式的PDF/eps文件, 导入到AI之后字体面目全非了有没有. 好在终于发现了一个<a href="http://www.latex-community.org/know-how/latexs-friends/61-latexs-friends-others/381-combining-latex-and-illustrator" target="_blank" rel="external">好办法</a>, 其实原理就在于要手动安装latex公式用到的amsfonts, 然后还提供了一个简单的AI脚本, 能够方便的在AI中输入公式, 用pdflatex渲染成PDF, 然后再从PDF中导入公式到AI中.</p>
+<h2 id="安装字体">安装字体</h2>
+<p>首先找到amsfonts windows版本字体的路径:<br><code>MiKTeX 2.8\fonts\type1\public\amsfonts\cm</code><br>在这个文件夹下面的<code>*.pfm</code>文件就是我们需要安装的字体. 把所有的<code>*.pfm</code>文件拖到<code>C:\WINDOWS\Fonts</code>文件夹下即可.</p>
+<h2 id="安装脚本">安装脚本</h2>
+<p>在AI的安装目录下<br><code>Adobe\Illustrator CS\Presets\Scripts</code><br>创建文件 <code>LaTeX.js</code>, 里面的内容如下:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> pdflatexexe=<span class="string">"pdflatex.exe"</span>;  <span class="comment">// Add full path if necessary</span></div><div class="line"></div><div class="line"><span class="comment">// determining the local temporary directory</span></div><div class="line"><span class="keyword">var</span> temppath=Folder.temp.fsName;  <span class="comment">// path already in Windows syntax: c:\...</span></div><div class="line"><span class="keyword">var</span> i=temppath.indexOf(<span class="string">"Temporary Internet Files"</span>);</div><div class="line"><span class="keyword">if</span>(i&gt;=<span class="number">0</span>) temppath=temppath.substr(<span class="number">0</span>,i+<span class="number">4</span>);</div><div class="line"><span class="comment">//temppath should now contain something like C:\Documents and Settings\&lt;user&gt;\Local Settings\Temp</span></div><div class="line"></div><div class="line"><span class="comment">// remember the last user input in a text file</span></div><div class="line"><span class="keyword">var</span> lastcode=<span class="string">"$$"</span></div><div class="line"><span class="keyword">var</span> lastcodefile=File(temppath+<span class="string">"\\latex2illustrator_lastcode.txt"</span>);</div><div class="line"><span class="keyword">if</span>(lastcodefile.exists)</div><div class="line">  {</div><div class="line">  lastcodefile.open(<span class="string">"r"</span>);</div><div class="line">  lastcode=lastcodefile.read();</div><div class="line">  lastcodefile.close();</div><div class="line">  }</div><div class="line"></div><div class="line"><span class="comment">// prompt for user input</span></div><div class="line"><span class="keyword">var</span> latexcode=prompt(<span class="string">"Please enter LaTeX code"</span>,lastcode,<span class="string">"LaTeX"</span>);</div><div class="line"><span class="keyword">if</span>(latexcode!=<span class="literal">null</span>)</div><div class="line">  {</div><div class="line">  lastcodefile.open(<span class="string">"w"</span>);</div><div class="line">  lastcodefile.write(latexcode);</div><div class="line">  lastcodefile.close();</div><div class="line"></div><div class="line">  <span class="comment">// add latex header etc. to create a complete latex document</span></div><div class="line">  <span class="keyword">var</span> latexfile=<span class="keyword">new</span> File(temppath+<span class="string">'\\latex2illustrator.tex'</span>);</div><div class="line">  latexfile.open(<span class="string">"w"</span>);</div><div class="line">  latexfile.writeln(<span class="string">"\\documentclass[11pt]{article}"</span>);</div><div class="line">  <span class="comment">// add or remove additional latex packages here</span></div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{amsmath}"</span>);</div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{amssymb}"</span>);</div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{gensymb}"</span>);   <span class="comment">// for \degree</span></div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{textcomp}"</span>);  <span class="comment">// for \textdegree</span></div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{bm}"</span>);        <span class="comment">// bold math</span></div><div class="line">  latexfile.writeln(<span class="string">"\\begin{document}"</span>);</div><div class="line">  latexfile.writeln(<span class="string">"\\pagestyle{empty}"</span>); <span class="comment">// no page number</span></div><div class="line">  latexfile.writeln(latexcode);</div><div class="line">  latexfile.writeln(<span class="string">"\\end{document}"</span>);</div><div class="line">  latexfile.close();</div><div class="line"></div><div class="line">  <span class="keyword">var</span> pdffile=File(temppath+<span class="string">"\\latex2illustrator.pdf"</span>);</div><div class="line">  <span class="keyword">if</span>(pdffile.exists)</div><div class="line">     pdffile.remove();</div><div class="line"></div><div class="line">  <span class="comment">// create a batch file calling latex</span></div><div class="line">  <span class="keyword">var</span> batchfile=<span class="keyword">new</span> File(temppath+<span class="string">'\\latex2illustrator.bat'</span>);</div><div class="line">  batchfile.open(<span class="string">"w"</span>);</div><div class="line">  batchfile.writeln(pdflatexexe+<span class="string">' -aux-directory="'</span>+temppath+<span class="string">'" -include-directory="'</span>+temppath+<span class="string">'" -output-directory="'</span>+temppath+<span class="string">'" "'</span>+temppath+<span class="string">'\\latex2illustrator.tex"'</span>);</div><div class="line">  <span class="comment">//batchfile.writeln('pause');</span></div><div class="line">  batchfile.writeln(<span class="string">'del "'</span>+temppath+<span class="string">'\\latex2illustrator.bat"'</span>);</div><div class="line">  batchfile.close();</div><div class="line">  batchfile.execute();</div><div class="line"></div><div class="line">  <span class="keyword">for</span>(; batchfile.exists; )</div><div class="line">  <span class="comment">// wait until the batch file has removed itself</span></div><div class="line"></div><div class="line">  <span class="keyword">var</span> pdffile=File(temppath+<span class="string">"\\latex2illustrator.pdf"</span>);</div><div class="line">  <span class="keyword">if</span>(pdffile.exists)</div><div class="line">    {</div><div class="line">    <span class="comment">// import pdf file into the current document</span></div><div class="line">    <span class="keyword">var</span> grp=app.activeDocument.activeLayer.groupItems.createFromFile(pdffile);</div><div class="line">    <span class="comment">// The imported objects are grouped twice. Now move the subgroup</span></div><div class="line">    <span class="comment">// items to the main group and skip the last item which is the page frame</span></div><div class="line">	<span class="keyword">for</span>( <span class="keyword">var</span> i=grp.pageItems[<span class="number">0</span>].pageItems.length-<span class="number">1</span>; --i&gt;=<span class="number">0</span>; )</div><div class="line">     grp.pageItems[<span class="number">0</span>].pageItems[i].move(grp,ElementPlacement.PLACEATEND);</div><div class="line">    grp.pageItems[<span class="number">0</span>].remove();</div><div class="line">    <span class="comment">// Move the imported objects to the center of the current view.</span></div><div class="line">    grp.translate(app.activeDocument.activeView.centerPoint[<span class="number">0</span>]-grp.left, app.activeDocument.activeView.centerPoint[<span class="number">1</span>]-grp.top);</div><div class="line">    }</div><div class="line">  <span class="keyword">else</span></div><div class="line">    alert(<span class="string">"File "</span>+temppath+<span class="string">"\\"</span>+pdffile.name+<span class="string">" could not be created. LaTeX error?"</span>);</div><div class="line">  }</div></pre></td></tr></table></figure>
 
-<p>假设$t$与$y$的符号相同, 即$y$是正确的预测, 且$|y| \geq 1$, 则此时hinge loss为0. 否则, $1-t\cdoty \geq 0$, hinge loss不为0, 且随着$y$减小而线性增大.</p>
-<h2 id="性质">性质</h2>
-<p>Hinge Loss是凸函数. 虽然不可导, 但是可以求解其次梯度(subgradient). 假设$y=w\cdot x$, 那么hinge loss关于参数$w$的subgradient为</p>
-<p><span>$$\frac{\partial L_{hinge}}{\partial w_i} = \begin{cases} -t \cdot x_i & \text{if } t \cdot y < 1 \\ 0 & \text{otherwise} \end{cases}$$</span></p>
-<h2 id="参考文献">参考文献</h2>
-<ol>
-<li><a href="http://en.wikipedia.org/wiki/Hinge_loss" target="_blank" rel="external">Wikipedia</a></li>
-</ol>
+<p>然后重新打开AI, 点击 <code>文件-&gt;脚本-&gt;LaTeX</code> 就可以输入公式了有没有.    </p>
 
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://bearpaw.github.io/blog/2015/02/05/hinge-loss/" data-id="baf5oh9zqpa58op3" class="article-share-link" data-share="baidu">分享到</a>
+        <a data-url="http://bearpaw.github.io/blog/2015/04/21/Using-LaTeX-in-Adobe-Illustrator/" data-id="bl50ff7wuq2dho9j" class="article-share-link" data-share="baidu">分享到</a>
       
 
       
-        <a href="http://bearpaw.github.io/blog/2015/02/05/hinge-loss/#ds-thread" class="article-comment-link">Comments</a>
+        <a href="http://bearpaw.github.io/blog/2015/04/21/Using-LaTeX-in-Adobe-Illustrator/#ds-thread" class="article-comment-link">Comments</a>
       
 
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/hinge-loss/">hinge loss</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/Illustrator/">Illustrator</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/LaTeX/">LaTeX</a></li></ul>
 
     </footer>
   </div>
   
+    
+<nav id="article-nav">
+  
+  
+    <a href="/blog/2015/04/16/Parsing-Occluded-People-by-Flexible-Compositions/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Parsing Occluded People by Flexible Compositions</div>
+    </a>
+  
+</nav>
+
+  
 </article>
 
 
-  
-  
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2015/04/21/Using-LaTeX-in-Adobe-Illustrator/" data-title="在 Adobe Illustrator 中使用 LaTeX 公式" data-url="http://bearpaw.github.io/blog/2015/04/21/Using-LaTeX-in-Adobe-Illustrator/"></div>
+  </section>
 </section>
       
       <aside id="sidebar">
