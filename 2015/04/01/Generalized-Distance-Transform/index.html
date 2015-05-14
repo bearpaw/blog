@@ -123,6 +123,7 @@
 		<!-- 文章目录结束 -->
         <p>距离变换于1966年被学者首次提出,目前已被广泛应用于图像分析、计算机视觉、模式识别等领域，人们利用它来实现目标细化、骨架提取、形状插值及匹配、粘连物体的分离等。距离变换是针对二值图像的一种变换。在二维空间中，一幅二值图像可以认为仅仅包含目标和背景两种像素，目标的像素值为1，背景的像素值为0；距离变换的结果不是另一幅二值图像，而是一幅灰度级图像，即距离图像，图像中每个像素的灰度值为该像素与距其最近的背景像素间的距离, 如下图所示。<a href="http://blog.csdn.net/carson2005/article/details/21617897" target="_blank" rel="external">[参考: 距离变换]</a></p>
 <p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/@/blog/dt.png" alt="Distance Transform"></p>
+<p><a id="more"></a></p>
 <h2 id="传统距离变换">传统距离变换</h2>
 <p>传统DT定义在grid的点上. 给定grid $G$, 令 $x, y$ 是 $G$ 上的两个点, 并且定义距离度量 $d(x, y)$. 给定一个集合 <span>$B \subseteq G$</span>, 那么 $B$ 在 $G$ 上的距离变换 <span>$D_B(x)$</span> 就定义为<strong>$G$ 上的每个点到 $B$ 的最近距离</strong>:</p>
 <span>$$D_B(x) = \min_{y\in B} d(x, y).$$</span>

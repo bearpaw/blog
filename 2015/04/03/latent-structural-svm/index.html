@@ -136,6 +136,7 @@ Structured Learning: 传统判别式学习中, 训练样本由 $\{x, y\}$ 构成
 <h2 id="Intuition">Intuition</h2>
 <p><strong>Structured Learning: </strong>传统判别式学习中, 训练样本由 <span>$\{x, y\}$</span> 构成，我们的目标是学习一个从输入到输出的映射<span>$f: x\rightarrow y$</span>. 以分类问题为例, <span>$y \in  \{1,2,3,⋯,N\}$</span> 是样本label. 但在有些问题中, 我们的输出可以是复杂的structured object, 比如parse tree, pose等等, 于是就出现了structured learning.</p>
 <p><strong>Latent structured learning: </strong>在结构化学习问题中, 有一些很有用的信息可能并未在训练数据 <span>$\{x, y\}$</span>中体现出来, 如human detection问题中, 输入$x$是图像, 输出$y$是人的bounding box, 而人体各个part的位置也是很有用的信息, 但是训练数据并未包含各个part的位置, 因此需要当作latent variable. 因此很有必要在学习模型时引入这些有用的latent variable的信息.</p>
+<p><a id="more"></a></p>
 <h2 id="Model">Model</h2>
 <p>在下面问题中, 训练数据集为 <span>$S = \{(x_1, y_1), \cdots, (x_n, y_n)\} \in (X\times Y)^n$</span>.</p>
 <h3 id="SSVM">SSVM</h3>

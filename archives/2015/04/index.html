@@ -113,19 +113,14 @@
       </header>
     
     <div class="article-entry" itemprop="articleBody">
-      	  
-		<!-- 文章目录开始 -->
-		
-		<!-- 文章目录结束 -->
+      
         <p>在Windows下做论文图, Adobe Illustrator很强大美腻. 但是公式的输入就很蛋疼了. 就算你生成了公式的PDF/eps文件, 导入到AI之后字体面目全非了有没有. 好在终于发现了一个<a href="http://www.latex-community.org/know-how/latexs-friends/61-latexs-friends-others/381-combining-latex-and-illustrator" target="_blank" rel="external">好办法</a>, 其实原理就在于要手动安装latex公式用到的amsfonts, 然后还提供了一个简单的AI脚本, 能够方便的在AI中输入公式, 用pdflatex渲染成PDF, 然后再从PDF中导入公式到AI中.</p>
-<h2 id="安装字体">安装字体</h2>
-<p>首先找到amsfonts windows版本字体的路径:<br><code>MiKTeX 2.8\fonts\type1\public\amsfonts\cm</code><br>在这个文件夹下面的<code>*.pfm</code>文件就是我们需要安装的字体. 把所有的<code>*.pfm</code>文件拖到<code>C:\WINDOWS\Fonts</code>文件夹下即可.</p>
-<h2 id="安装脚本">安装脚本</h2>
-<p>在AI的安装目录下<br><code>Adobe\Illustrator CS\Presets\Scripts</code><br>创建文件 <code>LaTeX.js</code>, 里面的内容如下:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> pdflatexexe=<span class="string">"pdflatex.exe"</span>;  <span class="comment">// Add full path if necessary</span></div><div class="line"></div><div class="line"><span class="comment">// determining the local temporary directory</span></div><div class="line"><span class="keyword">var</span> temppath=Folder.temp.fsName;  <span class="comment">// path already in Windows syntax: c:\...</span></div><div class="line"><span class="keyword">var</span> i=temppath.indexOf(<span class="string">"Temporary Internet Files"</span>);</div><div class="line"><span class="keyword">if</span>(i&gt;=<span class="number">0</span>) temppath=temppath.substr(<span class="number">0</span>,i+<span class="number">4</span>);</div><div class="line"><span class="comment">//temppath should now contain something like C:\Documents and Settings\&lt;user&gt;\Local Settings\Temp</span></div><div class="line"></div><div class="line"><span class="comment">// remember the last user input in a text file</span></div><div class="line"><span class="keyword">var</span> lastcode=<span class="string">"$$"</span></div><div class="line"><span class="keyword">var</span> lastcodefile=File(temppath+<span class="string">"\\latex2illustrator_lastcode.txt"</span>);</div><div class="line"><span class="keyword">if</span>(lastcodefile.exists)</div><div class="line">  {</div><div class="line">  lastcodefile.open(<span class="string">"r"</span>);</div><div class="line">  lastcode=lastcodefile.read();</div><div class="line">  lastcodefile.close();</div><div class="line">  }</div><div class="line"></div><div class="line"><span class="comment">// prompt for user input</span></div><div class="line"><span class="keyword">var</span> latexcode=prompt(<span class="string">"Please enter LaTeX code"</span>,lastcode,<span class="string">"LaTeX"</span>);</div><div class="line"><span class="keyword">if</span>(latexcode!=<span class="literal">null</span>)</div><div class="line">  {</div><div class="line">  lastcodefile.open(<span class="string">"w"</span>);</div><div class="line">  lastcodefile.write(latexcode);</div><div class="line">  lastcodefile.close();</div><div class="line"></div><div class="line">  <span class="comment">// add latex header etc. to create a complete latex document</span></div><div class="line">  <span class="keyword">var</span> latexfile=<span class="keyword">new</span> File(temppath+<span class="string">'\\latex2illustrator.tex'</span>);</div><div class="line">  latexfile.open(<span class="string">"w"</span>);</div><div class="line">  latexfile.writeln(<span class="string">"\\documentclass[11pt]{article}"</span>);</div><div class="line">  <span class="comment">// add or remove additional latex packages here</span></div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{amsmath}"</span>);</div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{amssymb}"</span>);</div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{gensymb}"</span>);   <span class="comment">// for \degree</span></div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{textcomp}"</span>);  <span class="comment">// for \textdegree</span></div><div class="line">  latexfile.writeln(<span class="string">"\\usepackage{bm}"</span>);        <span class="comment">// bold math</span></div><div class="line">  latexfile.writeln(<span class="string">"\\begin{document}"</span>);</div><div class="line">  latexfile.writeln(<span class="string">"\\pagestyle{empty}"</span>); <span class="comment">// no page number</span></div><div class="line">  latexfile.writeln(latexcode);</div><div class="line">  latexfile.writeln(<span class="string">"\\end{document}"</span>);</div><div class="line">  latexfile.close();</div><div class="line"></div><div class="line">  <span class="keyword">var</span> pdffile=File(temppath+<span class="string">"\\latex2illustrator.pdf"</span>);</div><div class="line">  <span class="keyword">if</span>(pdffile.exists)</div><div class="line">     pdffile.remove();</div><div class="line"></div><div class="line">  <span class="comment">// create a batch file calling latex</span></div><div class="line">  <span class="keyword">var</span> batchfile=<span class="keyword">new</span> File(temppath+<span class="string">'\\latex2illustrator.bat'</span>);</div><div class="line">  batchfile.open(<span class="string">"w"</span>);</div><div class="line">  batchfile.writeln(pdflatexexe+<span class="string">' -aux-directory="'</span>+temppath+<span class="string">'" -include-directory="'</span>+temppath+<span class="string">'" -output-directory="'</span>+temppath+<span class="string">'" "'</span>+temppath+<span class="string">'\\latex2illustrator.tex"'</span>);</div><div class="line">  <span class="comment">//batchfile.writeln('pause');</span></div><div class="line">  batchfile.writeln(<span class="string">'del "'</span>+temppath+<span class="string">'\\latex2illustrator.bat"'</span>);</div><div class="line">  batchfile.close();</div><div class="line">  batchfile.execute();</div><div class="line"></div><div class="line">  <span class="keyword">for</span>(; batchfile.exists; )</div><div class="line">  <span class="comment">// wait until the batch file has removed itself</span></div><div class="line"></div><div class="line">  <span class="keyword">var</span> pdffile=File(temppath+<span class="string">"\\latex2illustrator.pdf"</span>);</div><div class="line">  <span class="keyword">if</span>(pdffile.exists)</div><div class="line">    {</div><div class="line">    <span class="comment">// import pdf file into the current document</span></div><div class="line">    <span class="keyword">var</span> grp=app.activeDocument.activeLayer.groupItems.createFromFile(pdffile);</div><div class="line">    <span class="comment">// The imported objects are grouped twice. Now move the subgroup</span></div><div class="line">    <span class="comment">// items to the main group and skip the last item which is the page frame</span></div><div class="line">	<span class="keyword">for</span>( <span class="keyword">var</span> i=grp.pageItems[<span class="number">0</span>].pageItems.length-<span class="number">1</span>; --i&gt;=<span class="number">0</span>; )</div><div class="line">     grp.pageItems[<span class="number">0</span>].pageItems[i].move(grp,ElementPlacement.PLACEATEND);</div><div class="line">    grp.pageItems[<span class="number">0</span>].remove();</div><div class="line">    <span class="comment">// Move the imported objects to the center of the current view.</span></div><div class="line">    grp.translate(app.activeDocument.activeView.centerPoint[<span class="number">0</span>]-grp.left, app.activeDocument.activeView.centerPoint[<span class="number">1</span>]-grp.top);</div><div class="line">    }</div><div class="line">  <span class="keyword">else</span></div><div class="line">    alert(<span class="string">"File "</span>+temppath+<span class="string">"\\"</span>+pdffile.name+<span class="string">" could not be created. LaTeX error?"</span>);</div><div class="line">  }</div></pre></td></tr></table></figure>
-
-<p>然后重新打开AI, 点击 <code>文件-&gt;脚本-&gt;LaTeX</code> 就可以输入公式了有没有.    </p>
-
+<p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2015/04/21/Using-LaTeX-in-Adobe-Illustrator/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
@@ -172,10 +167,7 @@
       </header>
     
     <div class="article-entry" itemprop="articleBody">
-      	  
-		<!-- 文章目录开始 -->
-		
-		<!-- 文章目录结束 -->
+      
         <blockquote>
 <p>Parsing Occluded People by Flexible Compositions. Xianjie Chen, Alan Yuille. CVPR, 2015. </p>
 </blockquote>
@@ -183,14 +175,12 @@
 <h2 id="Motivation">Motivation</h2>
 <p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/parsing-occluded-people-1.png" alt="Motivation"></p>
 <p>通常我们做pose都是在occlusion没有那么严重的数据集上, 比如LSP, FLIC等. 但生活中往往会遇到occlusion很严重的情况 (Figure 2 (a)). 作者认为, 被遮挡的part的相邻的part能够提供一些关于occlusion的信息, 如Figure 2(b). </p>
-<h2 id="Model">Model</h2>
-<p>Pose的图模型还是Tree structure. 只不过作者认为, 去除被遮挡的部分, 人的part还是能连成一个subtree的. 当然本文不考虑一个人被分割为两个subtrees的情况. 因此本文提出了一个mixture model, 里面的每个component都是一个subtree, 作者称之为 flexible compositions, 如Figure 1所示.</p>
-<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/parsing-occluded-people-2.png" alt="flexible compositions"></p>
-<p>本文的大体框架与 NIPS 14的工作非常相似, 但是增加了一个binary occlusion decoupling variable <span>$\gamma_{ij} \in \{0, 1\}$</span>, 为1 时表示 part j 需要从part i中 decouple出来. 整个模型也是包含了 unary term和IDPR term, 另外还增加了一项 Image dependent occlusion decoupling term. 这个term 表征了 j 是否应该从 i中decouple出来, 因此总的分数为:<br><img src="http://7u2pi6.com1.z0.glb.clouddn.com/parsing-occluded-people-3.png" alt="Motivation"></p>
-<p>其中 A 是Unary term, R 是 IDPR term, D 是 Image dependent occlusion decoupling term, B是decoupling bias. </p>
-<p>本文inference 还似乎采用了传统的 DP (message passing)和 backtrack算法. 值得注意的是CNN training的过程.</p>
-<p>之前在train的时候, background patch从INRIA里面来, 作为第0类, 其他的每个patch都属于一个mixture. 现在因为要考虑occlusion信息, 每个pos patch 如果不可见, 属于第0个mixture, 否则属于第 1-K个mixture.</p>
-
+<p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2015/04/16/Parsing-Occluded-People-by-Flexible-Compositions/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
@@ -237,42 +227,18 @@
       </header>
     
     <div class="article-entry" itemprop="articleBody">
-      	  
-		<!-- 文章目录开始 -->
-		
-		<!-- 文章目录结束 -->
+      
         <blockquote>
 <p>Ouyang, Wanli, and Xiaogang Wang. “Joint deep learning for pedestrian detection.” ICCV 2013</p>
 </blockquote>
 <p>传统的Pedestrian detection pipeline将feature extraction, part deformation handling, occlusion handling, classification 分开做的. 本文则是提出了一个end-to-end 的DL框架, 将所有component融和在一起.</p>
 <p><img src="http://www.ee.cuhk.edu.hk/~wlouyang/projects/ouyangWiccv13Joint/images/overview.jpg" alt="Joint Deep Learning Architecture"></p>
-<h2 id="Model">Model</h2>
-<p>Model如上图所示, 其中输入是把图像, YUV特征, edge map拼在一起得到的; filtered data是conv1 后的response map; extracted feature 是进行了4X4 stride = 4 的 average pooling 后的结果. 比较关键的是part detectionmap 和 part score. 下面详细介绍这两层.</p>
-<h3 id="Part_detection_map">Part detection map</h3>
-<p><img src="http://hexo-pic-zhangliliang.qiniudn.com/%E5%B0%8FQ%E6%88%AA%E5%9B%BE-20141114155334.png" alt="Part detection map"></p>
-<p>如上图所示, 作者任何人的part可以按照大小分为不同level, 比如level 3 可以认为是level 2中的几个part组合而成. 注意在实现时, level 1-level 3 其实是同一个 conv 层, 共有20个part因此conv层就有20个channel. 比较特别的是不同channel的卷积核大小不同 (来表征不同的part size).</p>
-<h3 id="The_deformation_layer">The deformation layer</h3>
-<p>关键部分登场了. 在DPM中, 作者在model part之间的位置关系时, 定义了deformation cost, 在搜寻最佳位置时, 用了distance transform算法. 本文提出了用一种新的layer, 来模拟deformation操作. model如下图所示.</p>
-<p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/deformation-layer.png" alt="Deformation Layer"></p>
-<p>我们先直观地理解一下这一层在做什么. 在经过上一层操作后, 我们已经得到了每一个part的detection score map, 用 <span>$M_p$</span> 表示. 假定我们有 $N$ 个预先定义好的 deformation map <span>$D_{n,p}$</span>, 那么我们就能定义出 (negative) deformation cost:</p>
-<p><span>$$\sum_{n=1}^N c_{n,p} D_{n,p}$$</span><br>其中 <span>$c_{n,p}$</span> 是每一个deformation map的系数, 是一个标量.</p>
-<p>回顾DPM, 每个part最后的分数是 HOG score - deformation cost. 因此我们要做的操作就是把 detection score map 和 negative deformation cost map 加起来, 最终的part score map用  <span>$B_p$</span> 表示:</p>
-<p><span>$$B_p = M_p + \sum_{n=1}^N c_{n,p} D_{n,p}$$</span><br>不过我们感兴趣的还是 max score, 因此再在 <span>$B_p$</span> 求一个max</p>
-<p><span>$$s_p = \max_{(x,y)} B_p^{(x,y)}$$</span><br>对应的位置就是</p>
-<p><span>$$(x, y)_p = \arg\max_{(x,y)} B_p^{(x,y)}$$</span><br>一般情况下,  <span>$D_{n,p}$</span> 和  <span>$c_{n,p}$</span> 都是可以学习得到的. 不过在DPM中, </p>
-<p><span>$D_{n,p}$</span> 是quadratic的预先定义好的.</p>
-<p><strong>实例分析: </strong> 示意图中就是模拟DPM中的quadratic deformation cost, 最终的part score map通过下式计算:</p>
-<p><span>$$B_p = M_p + \sum_{n=1}^4 c_{n,p} D_{n,p} + c_{5, p}\cdot \mathbf{1}$$</span><br>其中</p>
-<p><span>$$\begin{eqnarray}
-D_1^{(x, y)} &=& (x - r_x)^2 \\
-D_2^{(x, y)} &=& (y - r_y)^2 \\
-D_3^{(x, y)} &=& (x - r_x) \\
-D_4^{(x, y)} &=& (y - r_y) 
-\end{eqnarray}$$</span><br>这里我们省略了 part的下标. <span>$(r_x, r_y)$</span>是第p个part通过聚类得到的anchor location.</p>
-<p>这一层的输出是一个 {% math p\times 1} 维的score vector.</p>
-<h3 id="visibility_reasoning_and_classification">visibility reasoning and classification</h3>
-<p>visibility reasoning请参照论文说明, 总之就是最后还会得到一层, 然后再做二分类 (如何准备正负样本?)</p>
-
+<p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2015/04/05/Joint-Deep-Learning-for-Pedestrian-Detection/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
@@ -319,35 +285,19 @@ D_4^{(x, y)} &=& (y - r_y)
       </header>
     
     <div class="article-entry" itemprop="articleBody">
-      	  
-		<!-- 文章目录开始 -->
-		
-		<!-- 文章目录结束 -->
+      
         <blockquote>
 <p>Yu, Chun-Nam John, and Thorsten Joachims. “Learning structural SVMs with latent variables.” ICML, 2009.</p>
 </blockquote>
 <h2 id="Intuition">Intuition</h2>
 <p><strong>Structured Learning: </strong>传统判别式学习中, 训练样本由 <span>$\{x, y\}$</span> 构成，我们的目标是学习一个从输入到输出的映射<span>$f: x\rightarrow y$</span>. 以分类问题为例, <span>$y \in  \{1,2,3,⋯,N\}$</span> 是样本label. 但在有些问题中, 我们的输出可以是复杂的structured object, 比如parse tree, pose等等, 于是就出现了structured learning.</p>
 <p><strong>Latent structured learning: </strong>在结构化学习问题中, 有一些很有用的信息可能并未在训练数据 <span>$\{x, y\}$</span>中体现出来, 如human detection问题中, 输入$x$是图像, 输出$y$是人的bounding box, 而人体各个part的位置也是很有用的信息, 但是训练数据并未包含各个part的位置, 因此需要当作latent variable. 因此很有必要在学习模型时引入这些有用的latent variable的信息.</p>
-<h2 id="Model">Model</h2>
-<p>在下面问题中, 训练数据集为 <span>$S = \{(x_1, y_1), \cdots, (x_n, y_n)\} \in (X\times Y)^n$</span>.</p>
-<h3 id="SSVM">SSVM</h3>
-<p>SSVM希望学习到下列判别函数</p>
-<span>$$f_w(x) = \arg\max_{y\in Y} [w\cdot \Phi(x, y)]$$</span><br>其中 <span>$\Phi(x, y)$</span> 是表达了输入 $x$ 与输出 $y$ 之间的关系的joint feature vector. 求argmax的过程就是inference, 求解最优 $w$ 的过程就是learning.<br><br>SSVM通过在训练集上最小化risk来得到, risk定义为 <span>$\Delta (y, \hat{y})$</span>, 度量了预测结果 <span>$\hat{y}$</span> 与真实label $y$ 之间的差异. 通常情况下risk都是离散的, 非凸的, 不好优化, 因此可以找一个凸的上界, 通过最小化上界来最小化原来的risk, 这个上界可以表示为:<br><span>$$\Delta (y_i, \hat{y}_i(w)) \leq \max_{\hat{y}\in Y} [\Delta (y_i, \hat{y}) + w\cdot \Phi(x_i, \hat{y})] - w\cdot \Phi(x_i, y_i)$$</span><br>其中<br><span>$$\hat{y}_i(w) = \arg\max_{y\in Y} w\cdot \Phi(x_i, y) $$</span><br>直观理解为，max那一项是通过搜索找出最接近真实label的 <span>$\hat{y}$</span> 的得分；最后一项是真实label的真实得分 <a href="http://zhangliliang.com/2014/11/22/paper-note-latent-structural-svm/" target="_blank" rel="external">[引]</a>。<br><br>如果用SVM来formulate这个问题, 那么可以把上面定义的下届作为一个regularizer加到cost function里面, 这样就得到了下面的凸优化问题:<br><span>$$\min_w \frac{1}{2}\|w\|^2+C\sum_{i=1}^n \left[\max_{\hat{y}\in Y} [\Delta (y_i, \hat{y}) + w\cdot \Phi(x_i, \hat{y})] - w\cdot \Phi(x_i, y_i) \right]$$</span>
-
-<h3 id="Latent_SSVM">Latent SSVM</h3>
-<p>在intuition里面我们已经讨论过, 有时候输入和输出的关系不能完全由 x, y决定, 还和某个隐变量 <span>$h \in H$</span> 息息相关, joint feature 可以定义为 <span>$\Phi(x, y, h)$</span>, 这样判别函数也就变成了</p>
-<span>$$f_w(x) = \arg\max_{(y, h) \in Y\times H} [w\cdot \Phi(x, y, h)]$$</span><br>类似SSVM, 我们也需要定义risk. 但是注意在现实问题中, 隐变量并不是输出 (比如DPM中, part只是中间步骤用的, 最终得到的还是整体的bbox), 因此risk不应该depend on隐变量. 这种考虑不仅更贴合实际, 而且简化了risk计算, 用数学公式可以表达如下:<br><span>$$\Delta ((y_i, h^*_i(w), (\hat{y}_i(w), \hat{h}_i(w)) = \Delta (y_i,\hat{y}_i(w), \hat{h}_i(w))$$</span><br>其中 <span>$h^*_i(w)$</span> 是”最优的”能描述x与y关系的隐变量. 基于此, risk的上界为:<br><span>$$\Delta ((y_i, h^*_i(w), (\hat{y}_i(w), \hat{h}_i(w)) \leq \left(\max_{\hat{y}, \hat{h}\in Y\times H} [\Delta (y_i, \hat{y}, \hat{h}) + w\cdot \Phi(x_i, \hat{y}, \hat{h})]\right) - \left(\max_{h\in H}w\cdot \Phi(x_i, y_i, h)\right)$$</span><br>定义好上界后, 同SSVM一样, 可以formulate成带正则项的SVM<br><span>$$\min_w \frac{1}{2}\|w\|^2+C\sum_{i=1}^n \left(\max_{\hat{y}, \hat{h}\in Y\times H} [\Delta (y_i, \hat{y}, \hat{h}) + w\cdot \Phi(x_i, \hat{y}, \hat{h})]\right) -  C\sum_{i=1}^n \left(\max_{h\in H}w\cdot \Phi(x_i, y_i, h)\right)$$</span>
-
-<h2 id="Learning">Learning</h2>
-<p>LSSVM的目标函数是两个convex function的差, 也就可以理解为convex + concave, 因此可以用Concave-Convex Procedure (<a href="http://www.stat.ucla.edu/~yuille/pubs/optimize_papers/cccp_nips01.pdf" target="_blank" rel="external">Yuille &amp; Rangarajan, 2003</a>)求解.</p>
-<h3 id="CCCP">CCCP</h3>
-<p>CCCP解决的是最小化两个convex function $f(w), g(w)$ 的差的算法</p>
-<span>$$\min_w f(w) + (-g(w)).$$</span><br><img alt="CCCP" src="http://7u2pi6.com1.z0.glb.clouddn.com/cccp.png" width="440px"><br><br>首先, 第3行先找到一个超平面 <span>$v_t$</span>, 使得右边是 $-g(w)$ 的一个上界 , 然后最小化 $f(w) + Upperbound$ 来更新参数. CCCP能保证收敛.<br><br><h3> CCCP迭代求解LSSVM </h3><br><strong>Step 1: </strong>观察lssvm的目标函数, 我们先要找concave part的上界. 首先fix参数 <span>$w_t$</span>, 求解最优的 <span>$h^*$</span>,<br><span>$$h^* = \arg\max_{h\in H}w\cdot \Phi(x_i, y_i, h)$$</span><br>这样定义上界的超平面  <span>$v_t$</span> 为:<br><span>$$v_t = \Phi(x_i, y_i, h^*)$$</span>
-
-<p><strong>Step 2: </strong> fix <span>$v_t$</span> , 更新模型参数 <span>$w_{t+1}$</span></p>
-<p><span>$$\min_w \frac{1}{2}\|w\|^2+C\sum_{i=1}^n \max_{\hat{y}, \hat{h}\in Y\times H} [\Delta (y_i, \hat{y}, \hat{h}) + w\cdot \Phi(x_i, \hat{y}, \hat{h})] -  C\sum_{i=1}^n\max_{h\in H}w\cdot \Phi(x_i, y_i, h^*_i)$$</span><br>这一步用ssvm的求解方法解就好了.</p>
-
+<p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2015/04/03/latent-structural-svm/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
@@ -394,31 +344,15 @@ D_4^{(x, y)} &=& (y - r_y)
       </header>
     
     <div class="article-entry" itemprop="articleBody">
-      	  
-		<!-- 文章目录开始 -->
-		
-		<!-- 文章目录结束 -->
+      
         <p>距离变换于1966年被学者首次提出,目前已被广泛应用于图像分析、计算机视觉、模式识别等领域，人们利用它来实现目标细化、骨架提取、形状插值及匹配、粘连物体的分离等。距离变换是针对二值图像的一种变换。在二维空间中，一幅二值图像可以认为仅仅包含目标和背景两种像素，目标的像素值为1，背景的像素值为0；距离变换的结果不是另一幅二值图像，而是一幅灰度级图像，即距离图像，图像中每个像素的灰度值为该像素与距其最近的背景像素间的距离, 如下图所示。<a href="http://blog.csdn.net/carson2005/article/details/21617897" target="_blank" rel="external">[参考: 距离变换]</a></p>
 <p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/@/blog/dt.png" alt="Distance Transform"></p>
-<h2 id="传统距离变换">传统距离变换</h2>
-<p>传统DT定义在grid的点上. 给定grid $G$, 令 $x, y$ 是 $G$ 上的两个点, 并且定义距离度量 $d(x, y)$. 给定一个集合 <span>$B \subseteq G$</span>, 那么 $B$ 在 $G$ 上的距离变换 <span>$D_B(x)$</span> 就定义为<strong>$G$ 上的每个点到 $B$ 的最近距离</strong>:</p>
-<span>$$D_B(x) = \min_{y\in B} d(x, y).$$</span>
-
-<p>如果我们在 $G$ 上定义一个 indicator function <span>$\mathbf{1}_B(y)$</span>:</p>
-<span>$$\mathbf{1}_B(y) :=
-	\begin{cases} 
-	0 &\text{if } y \in B, \\
-	\infty &\text{if } y \notin B.
-	\end{cases}$$</span><br>那么DT可以重新formulate为下列形式:<br><span>$$D_B(x) = \min_{y\in G} (d(x, y) + \mathbf{1}_B(y)).$$</span><br>这和本文开篇的例子是一致的.<br><br><h3> Generalized 距离变换 </h3><br>上一节定义的 <span>$\mathbf{1}_B(y)$</span> 是一个定义在 $G$ 上的二值函数, 假设我们将其替换成定义在 $G$ 上的任意函数 $f(y)$, 就得到了generalized DT:<br><span>$$D_f(x) = \min_{y\in G} (d(x, y) + f(y)).$$</span>
-
-<p>假设 $G$ 上共有 $k$ 个点, 那么对每一个 $G$ 上的点, 都需要将所有点扫描一次, 因此算法复杂度是 $O(k^2)$. 从上面式子可以看出, DT 直观上是对 $x$ 找到对应的 $y$, 使得 $x, y$ 之间的距离尽可能小, 同时函数值 $f(y)$ 也要小.</p>
-<h3 id="参考">参考</h3>
-<ol>
-<li><a href="http://blog.csdn.net/abcjennifer/article/details/7617883" target="_blank" rel="external">距离变换 (Rachel Zhang的专栏)</a></li>
-<li>Pictorial Structures for Object Recognition. Felzenszwalb, Pedro F., and Daniel P. Huttenlocher. IJCV (2005).</li>
-<li>An example on using the distance transform can be found at <code>opencv_source_code/samples/cpp/distrans.cpp</code></li>
-</ol>
-
+<p>
+        
+          <p class="article-more-link">
+            <a href="/blog/2015/04/01/Generalized-Distance-Transform/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">

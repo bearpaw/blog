@@ -134,6 +134,7 @@
 </blockquote>
 <p>传统的Pedestrian detection pipeline将feature extraction, part deformation handling, occlusion handling, classification 分开做的. 本文则是提出了一个end-to-end 的DL框架, 将所有component融和在一起.</p>
 <p><img src="http://www.ee.cuhk.edu.hk/~wlouyang/projects/ouyangWiccv13Joint/images/overview.jpg" alt="Joint Deep Learning Architecture"></p>
+<p><a id="more"></a></p>
 <h2 id="Model">Model</h2>
 <p>Model如上图所示, 其中输入是把图像, YUV特征, edge map拼在一起得到的; filtered data是conv1 后的response map; extracted feature 是进行了4X4 stride = 4 的 average pooling 后的结果. 比较关键的是part detectionmap 和 part score. 下面详细介绍这两层.</p>
 <h3 id="Part_detection_map">Part detection map</h3>

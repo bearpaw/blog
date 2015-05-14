@@ -116,12 +116,19 @@
 		
 			<div id="toc" class="toc-article">
 				<strong class="toc-title">文章目录</strong>
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#分支操作"><span class="toc-number">1.</span> <span class="toc-text">分支操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步_fork"><span class="toc-number">2.</span> <span class="toc-text">同步 fork</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决_merge_conflicts"><span class="toc-number">3.</span> <span class="toc-text">解决 merge conflicts</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#编辑冲突"><span class="toc-number">3.1.</span> <span class="toc-text">编辑冲突</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件删除冲突"><span class="toc-number">3.2.</span> <span class="toc-text">文件删除冲突</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#保留文件"><span class="toc-number">3.2.1.</span> <span class="toc-text">保留文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#删除文件"><span class="toc-number">3.2.2.</span> <span class="toc-text">删除文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#提交"><span class="toc-number">3.2.3.</span> <span class="toc-text">提交</span></a></li></ol></li></ol></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Clone"><span class="toc-number">1.</span> <span class="toc-text">Clone</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分支操作"><span class="toc-number">2.</span> <span class="toc-text">分支操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#同步_fork"><span class="toc-number">3.</span> <span class="toc-text">同步 fork</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决_merge_conflicts"><span class="toc-number">4.</span> <span class="toc-text">解决 merge conflicts</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#编辑冲突"><span class="toc-number">4.1.</span> <span class="toc-text">编辑冲突</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#文件删除冲突"><span class="toc-number">4.2.</span> <span class="toc-text">文件删除冲突</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#保留文件"><span class="toc-number">4.2.1.</span> <span class="toc-text">保留文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#删除文件"><span class="toc-number">4.2.2.</span> <span class="toc-text">删除文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#提交"><span class="toc-number">4.2.3.</span> <span class="toc-text">提交</span></a></li></ol></li></ol></li></ol>
 			</div>
 		
 		<!-- 文章目录结束 -->
         <p>本文主要介绍git常用操作, 包括同步fork, 解决merge 冲突等等.</p>
 <p><a id="more"></a></p>
+<h2 id="Clone">Clone</h2>
+<p>Clone 到指定目录</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone git@github.com:whatever folder-name</div></pre></td></tr></table></figure>
+
+<p>Clone 指定branch</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone -b &lt;branch&gt; &lt;remote_repo&gt;</div></pre></td></tr></table></figure>
+
 <h2 id="分支操作">分支操作</h2>
 <p>参考:</p>
 <ol>

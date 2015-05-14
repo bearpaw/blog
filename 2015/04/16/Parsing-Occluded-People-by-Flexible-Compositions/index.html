@@ -145,6 +145,7 @@ Motivation
 <h2 id="Motivation">Motivation</h2>
 <p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/parsing-occluded-people-1.png" alt="Motivation"></p>
 <p>通常我们做pose都是在occlusion没有那么严重的数据集上, 比如LSP, FLIC等. 但生活中往往会遇到occlusion很严重的情况 (Figure 2 (a)). 作者认为, 被遮挡的part的相邻的part能够提供一些关于occlusion的信息, 如Figure 2(b). </p>
+<p><a id="more"></a></p>
 <h2 id="Model">Model</h2>
 <p>Pose的图模型还是Tree structure. 只不过作者认为, 去除被遮挡的部分, 人的part还是能连成一个subtree的. 当然本文不考虑一个人被分割为两个subtrees的情况. 因此本文提出了一个mixture model, 里面的每个component都是一个subtree, 作者称之为 flexible compositions, 如Figure 1所示.</p>
 <p><img src="http://7u2pi6.com1.z0.glb.clouddn.com/blog/parsing-occluded-people-2.png" alt="flexible compositions"></p>
